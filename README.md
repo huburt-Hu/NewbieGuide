@@ -23,7 +23,7 @@ allprojects {
  module的build.gradle添加
  ```
  dependencies {
-	  compile 'com.github.huburt-Hu:NewbieGuide:v1.0.0'
+	  compile 'com.github.huburt-Hu:NewbieGuide:v1.0.2'
 	}
  ```
 
