@@ -23,6 +23,13 @@ public class Builder {
     }
 
     /**
+     * 添加需要高亮的view,默认高亮类型为矩形
+     */
+    public Builder addHighLight(View view) {
+        return addHighLight(view, HighLight.Type.RECTANGLE, 0);
+    }
+
+    /**
      * 添加需要高亮的view
      *
      * @param view 需要高亮的view
