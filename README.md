@@ -6,7 +6,7 @@ Android 快速实现新手引导层的库
 
 # 效果
 
-![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/sample.png)  
+![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)  
 
 # 导入
 
