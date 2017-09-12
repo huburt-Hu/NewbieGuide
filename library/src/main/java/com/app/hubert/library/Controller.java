@@ -61,7 +61,7 @@ public class Controller {
 
         guideLayout = new GuideLayout(activity);
         guideLayout.setHighLights(list);
-        if (backgroundColor > 0)
+        if (backgroundColor != 0)
             guideLayout.setBackgroundColor(backgroundColor);
 
 //        guideLayout.addView(getLeftIndicate(), getLp(0, 100));
