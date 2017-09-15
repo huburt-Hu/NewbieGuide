@@ -1,6 +1,7 @@
 package com.app.hubert.library;
 
 import android.app.Activity;
+import android.app.Fragment;
 
 /**
  * Created by hubert
@@ -29,6 +30,14 @@ public class NewbieGuide {
      */
     public static Builder with(Activity activity) {
         return new Builder(activity);
+    }
+
+    public static Builder with(Fragment fragment) {
+        return new Builder(fragment);
+    }
+
+    public static Builder with(android.support.v4.app.Fragment v4Fragment) {
+        return new Builder(v4Fragment);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.app.hubert.library;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Builder {
+    private Fragment fragment;
+    private android.support.v4.app.Fragment v4Fragment;
     private Activity activity;
     private List<HighLight> list = new ArrayList<>();
     private OnGuideChangedListener onGuideChangedListener;
@@ -20,6 +23,16 @@ public class Builder {
 
     public Builder(Activity activity) {
         this.activity = activity;
+    }
+
+    public Builder(Fragment fragment) {
+        this.fragment = fragment;
+        this.activity = fragment.getActivity();
+    }
+
+    public Builder(android.support.v4.app.Fragment v4Fragment) {
+        this.v4Fragment = v4Fragment;
+        this.activity = v4Fragment.getActivity();
     }
 
     /**
@@ -56,7 +69,7 @@ public class Builder {
         return this;
     }
 
-    public Builder addHighLight(List<HighLight> list) {
+    public Builder addHighLights(List<HighLight> list) {
         this.list.addAll(list);
         return this;
     }
@@ -174,5 +187,13 @@ public class Builder {
 
     int getBackgroundColor() {
         return backgroundColor;
+    }
+
+    Fragment getFragment() {
+        return fragment;
+    }
+
+    android.support.v4.app.Fragment getV4Fragment() {
+        return v4Fragment;
     }
 }

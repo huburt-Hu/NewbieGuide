@@ -4,6 +4,11 @@ Android 快速实现新手引导层的库
 这是一款可以通过简洁链式调用，一行代码实现引导层的显示，自动判断首次显示，当然也可以通过参数配置来满足不同的显示逻辑和需求。
 通过自定义layout.xml实现文本及image的添加，非常方便位置的调整，避免代码调整各种不好控制的情况：实验5，6次才最终确定文字等的位置。
 
+# 更行日志
+
+v1.1.0 pre-release 新增fragment支持，监听fragment的onDestroyView销毁引导层
+
+
 # 效果
 
 ![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)  
