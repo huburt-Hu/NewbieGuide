@@ -36,7 +36,6 @@ public class AbcFragment extends Fragment {
         if (arguments != null) {
             text = arguments.getString("text");
         }
-
     }
 
     @Nullable

@@ -1,21 +1,32 @@
+[![](https://img.shields.io/badge/release-v1.1.0-brightgreen.svg)](https://github.com/huburt-Hu/NewbieGuide/archive/v1.1.0.zip)
+
+
+
 # NewbieGuide
-Android 快速实现新手引导层的库
 
-这是一款可以通过简洁链式调用，一行代码实现引导层的显示，自动判断首次显示，当然也可以通过参数配置来满足不同的显示逻辑和需求。
-通过自定义layout.xml实现文本及image的添加，非常方便位置的调整，避免代码调整各种不好控制的情况：实验5，6次才最终确定文字等的位置。
+An library Quickly implement the novice boot layer library for Android
 
-# 更新日志
+This library can be displayed by simple chain calls,
+a single line of code implementing the guidance layer,
+and automatically implementing the first display,
 
-v1.1.0 pre-release 新增fragment支持，监听fragment的onDestroyView销毁引导层
+and of course, the parameter configuration can be used to satisfy different display logic and requirements.
 
+It is very convenient to adjust the position of the text and image through the custom layout.
 
-# 效果
+![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)
 
-![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)  
+# Change Log
 
-# 导入
+v1.1.0 pre-release Add fragment support and monitor fragment's onDestroyView to destroy the NewbieGuide layer
 
-项目的build.gradle添加
+# Document
+
+·[中文](https://github.com/huburt-Hu/NewbieGuide/raw/master/doc/README-zh.md)
+
+# Download
+
+Project build.gradle adds
 ```
 allprojects {
 		repositories {
@@ -25,51 +36,51 @@ allprojects {
 	}
  ```
  
- module的build.gradle添加
+build.gradle of module adds
  ```
  dependencies {
 	  compile 'com.github.huburt-Hu:NewbieGuide:v1.0.3'
 	}
  ```
 
-# 使用
+# Usage
  
- ## 基本使用：
+ ## The basic use：
  ```
 NewbieGuide.with(this)//传入activity
-                .setLabel("guide1")//设置引导层标示，用于区分不同引导层，必传！否则报错
-                .addHighLight(textView, HighLight.Type.RECTANGLE)//添加需要高亮的view
-                .setLayoutRes(R.layout.view_guide)//自定义的提示layout，不要添加背景色，引导层背景色通过setBackgroundColor()设置
-                .show();//显示引导层
+                .setLabel("guide1")//Set guide layer labeling to distinguish different guide layers, must be passed! Otherwise throw an error
+                .addHighLight(textView, HighLight.Type.RECTANGLE)//Add the view that needs to be highlighted
+                .setLayoutRes(R.layout.view_guide)//Custom guide layer layout, do not add background color, the boot layer background color is set by setBackgroundColor()
+                .show();
  ```
-## 参数配置
+## more parameter configuration
 ```
 Controller controller = NewbieGuide.with(this)
-                .setOnGuideChangedListener(new OnGuideChangedListener() {//设置监听
+                .setOnGuideChangedListener(new OnGuideChangedListener() {//add listener
                     @Override
                     public void onShowed(Controller controller) {
-                        //引导层显示
+                        //when guide layer display
                     }
 
                     @Override
                     public void onRemoved(Controller controller) {
-                        //引导层消失
+                        //when guide layer dismiss
                     }
                 })
-                .setBackgroundColor(Color.BLACK)//设置引导层背景色，建议有透明度，默认背景色为：0xb2000000
-                .setEveryWhereCancelable(false)//设置点击任何区域消失，默认为true
-                .setLayoutRes(R.layout.view_guide, R.id.textView)//自定义的提示layout,第二个可变参数为点击隐藏引导层view的id
-                .alwaysShow(true)//是否每次都显示引导层，默认false
-                .build();//构建引导层的控制器
+                .setBackgroundColor(Color.BLACK)//Set the background color of the guide layer and suggest translucent. The default background color is: 0xb2000000
+                .setEveryWhereCancelable(false)//The Settings click anywhere to dismiss, and default is true
+                .setLayoutRes(R.layout.view_guide, R.id.textView)//The second variable parameter is to click on the view's id of the hidden guide layer view
+                .alwaysShow(true)//Show the boot layer each time,default is false
+                .build();//Build the controller for the guide layer
         controller.resetLabel("guide1");
-        controller.remove();//移除引导层
-        controller.show();//显示引导层
+        controller.remove();//remove the guide layer
+        controller.show();//show the guide layer
 ```
 
 # License
 
  ```
- Copyright 2017 huburt-Hu
+Copyright 2017 huburt-Hu
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
