@@ -2,7 +2,8 @@
 
 
 
-# NewbieGuide
+NewbieGuide
+————————————
 
 An library Quickly implement the novice boot layer library for Android
 
@@ -22,7 +23,7 @@ v1.1.0 pre-release Add fragment support and monitor fragment's onDestroyView to 
 
 # Document
 
-·[中文](https://github.com/huburt-Hu/NewbieGuide/raw/master/doc/README-zh.md)
+·[中文](https://github.com/huburt-Hu/NewbieGuide/blob/master/doc/README-zh.md)
 
 # Download
 
@@ -47,13 +48,13 @@ build.gradle of module adds
  
  ## The basic use：
  ```
-NewbieGuide.with(this)//传入activity
+NewbieGuide.with(this)//activity or fragment
                 .setLabel("guide1")//Set guide layer labeling to distinguish different guide layers, must be passed! Otherwise throw an error
                 .addHighLight(textView, HighLight.Type.RECTANGLE)//Add the view that needs to be highlighted
                 .setLayoutRes(R.layout.view_guide)//Custom guide layer layout, do not add background color, the boot layer background color is set by setBackgroundColor()
                 .show();
  ```
-## more parameter configuration
+## More parameter configuration
 ```
 Controller controller = NewbieGuide.with(this)
                 .setOnGuideChangedListener(new OnGuideChangedListener() {//add listener
