@@ -2,8 +2,7 @@
 
 
 
-NewbieGuide
-————————————
+# NewbieGuide
 
 An library Quickly implement the novice boot layer library for Android
 
@@ -17,15 +16,15 @@ It is very convenient to adjust the position of the text and image through the c
 
 ![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)
 
-# Change Log
+## Change Log
 
 v1.1.0 pre-release Add fragment support and monitor fragment's onDestroyView to destroy the NewbieGuide layer
 
-# Document
+## Document
 
 ·[中文](https://github.com/huburt-Hu/NewbieGuide/blob/master/doc/README-zh.md)
 
-# Download
+## Download
 
 Project build.gradle adds
 ```
@@ -44,9 +43,9 @@ build.gradle of module adds
 	}
  ```
 
-# Usage
+## Usage
  
- ## The basic use：
+ ### The basic use：
  ```
 NewbieGuide.with(this)//activity or fragment
                 .setLabel("guide1")//Set guide layer labeling to distinguish different guide layers, must be passed! Otherwise throw an error
@@ -54,7 +53,7 @@ NewbieGuide.with(this)//activity or fragment
                 .setLayoutRes(R.layout.view_guide)//Custom guide layer layout, do not add background color, the boot layer background color is set by setBackgroundColor()
                 .show();
  ```
-## More parameter configuration
+### More parameter configuration
 ```
 Controller controller = NewbieGuide.with(this)
                 .setOnGuideChangedListener(new OnGuideChangedListener() {//add listener
@@ -78,7 +77,7 @@ Controller controller = NewbieGuide.with(this)
         controller.show();//show the guide layer
 ```
 
-# License
+## License
 
  ```
 Copyright 2017 huburt-Hu
