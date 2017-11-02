@@ -1,6 +1,7 @@
 package com.app.hubert.library;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 /**
  * Created by hubert
@@ -19,6 +20,7 @@ public class V4ListenerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d("hubert", "onStart: ");
         mFragmentLifecycle.onStart();
     }
 
@@ -37,6 +39,7 @@ public class V4ListenerFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("hubert", "onDestroy: ");
         mFragmentLifecycle.onDestroy();
     }
 }

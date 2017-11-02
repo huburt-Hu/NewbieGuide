@@ -1,6 +1,7 @@
 package com.app.hubert.library;
 
 import android.app.Fragment;
+import android.util.Log;
 
 public class ListenerFragment extends Fragment {
 
@@ -13,6 +14,7 @@ public class ListenerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d("hubert", "onStart: ");
         mFragmentLifecycle.onStart();
     }
 
@@ -31,6 +33,7 @@ public class ListenerFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("hubert", "onDestroy: ");
         mFragmentLifecycle.onDestroy();
     }
 }

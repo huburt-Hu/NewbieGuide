@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -69,7 +70,8 @@ public class Controller {
             boolean showed = sp.getBoolean(label, false);
             if (showed) return NewbieGuide.FAILED;
         }
-
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         guideLayout = new GuideLayout(activity);
         guideLayout.setHighLights(list);
         if (backgroundColor != 0)
@@ -153,6 +155,21 @@ public class Controller {
         if (guideLayout != null && guideLayout.getParent() != null) {
             ((ViewGroup) guideLayout.getParent()).removeView(guideLayout);
             if (onGuideChangedListener != null) onGuideChangedListener.onRemoved(this);
+        }
+        //隐藏引导层时移除监听fragment
+        if (fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            FragmentManager fm = fragment.getChildFragmentManager();
+            ListenerFragment listenerFragment = (ListenerFragment) fm.findFragmentByTag(TAG);
+            if (listenerFragment != null) {
+                fm.beginTransaction().remove(listenerFragment).commitAllowingStateLoss();
+            }
+        }
+        if (v4Fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
+            V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(TAG);
+            if (v4ListenerFragment != null) {
+                v4Fm.beginTransaction().remove(v4ListenerFragment).commitAllowingStateLoss();
+            }
         }
     }
 
