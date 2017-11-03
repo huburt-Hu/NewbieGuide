@@ -1,3 +1,6 @@
+[![](https://jitpack.io/v/huburt-Hu/NewbieGuide.svg)](https://jitpack.io/#huburt-Hu/NewbieGuide)
+
+
 # NewbieGuide
 Android 快速实现新手引导层的库
 

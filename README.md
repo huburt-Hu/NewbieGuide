@@ -1,5 +1,4 @@
-[![](https://img.shields.io/badge/release-v1.1.0-brightgreen.svg)](https://github.com/huburt-Hu/NewbieGuide/archive/v1.1.0.zip)
-
+[![](https://jitpack.io/v/huburt-Hu/NewbieGuide.svg)](https://jitpack.io/#huburt-Hu/NewbieGuide)
 
 
 # NewbieGuide
