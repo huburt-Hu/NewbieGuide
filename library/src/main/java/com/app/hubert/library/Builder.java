@@ -20,6 +20,7 @@ public class Builder {
     private boolean alwaysShow;
     private int layoutResId;
     private int[] viewIds;
+    private boolean fullScreen;
 
     public Builder(Activity activity) {
         this.activity = activity;
@@ -128,6 +129,14 @@ public class Builder {
     }
 
     /**
+     * 是否全屏显示，即是否包含状态栏
+     */
+    public Builder fullScreem(boolean isFullScreen) {
+        this.fullScreen = isFullScreen;
+        return this;
+    }
+
+    /**
      * 构建引导层controller
      *
      * @return controller
@@ -195,5 +204,9 @@ public class Builder {
 
     android.support.v4.app.Fragment getV4Fragment() {
         return v4Fragment;
+    }
+
+    public boolean isFullScreen() {
+        return fullScreen;
     }
 }

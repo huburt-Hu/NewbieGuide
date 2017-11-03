@@ -14,15 +14,25 @@ and of course, the parameter configuration can be used to satisfy different disp
 
 It is very convenient to adjust the position of the text and image through the custom layout.
 
-![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)
-
 ## Change Log
 
 v1.1.0 pre-release Add fragment support and monitor fragment's onDestroyView to destroy the NewbieGuide layer
 
 ## Document
 
-·[中文](https://github.com/huburt-Hu/NewbieGuide/blob/master/doc/README-zh.md)
+* [中文](https://github.com/huburt-Hu/NewbieGuide/blob/master/doc/README-zh.md)
+
+## 效果
+
+Change the size of the highlighted view need't adjusts the code where showing the guide layer
+
+![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-08-09-161703.png)  
+![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/change_size.png)
+
+The guide layer's XML can be fully customizable, just you like
+
+![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/device-2017-11-03-151550.png)
+
 
 ## Download
 
@@ -39,21 +49,23 @@ allprojects {
 build.gradle of module adds
  ```
  dependencies {
-	  compile 'com.github.huburt-Hu:NewbieGuide:v1.0.3'
+	  compile 'com.github.huburt-Hu:NewbieGuide:v1.1.0'
 	}
  ```
 
 ## Usage
  
- ### The basic use：
- ```
+### The basic use：
+
+```
 NewbieGuide.with(this)//activity or fragment
                 .setLabel("guide1")//Set guide layer labeling to distinguish different guide layers, must be passed! Otherwise throw an error
                 .addHighLight(textView, HighLight.Type.RECTANGLE)//Add the view that needs to be highlighted
                 .setLayoutRes(R.layout.view_guide)//Custom guide layer layout, do not add background color, the boot layer background color is set by setBackgroundColor()
                 .show();
- ```
+```
 ### More parameter configuration
+
 ```
 Controller controller = NewbieGuide.with(this)
                 .setOnGuideChangedListener(new OnGuideChangedListener() {//add listener

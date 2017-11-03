@@ -38,6 +38,7 @@ public class Controller {
     private boolean alwaysShow;
     private int layoutResId;
     private int[] viewIds;
+    private boolean fullScreen;
 
     private FrameLayout mParentView;
     private GuideLayout guideLayout;
@@ -55,6 +56,7 @@ public class Controller {
         this.alwaysShow = builder.isAlwaysShow();
         this.layoutResId = builder.getLayoutResId();
         this.viewIds = builder.getViewIds();
+        this.fullScreen = builder.isFullScreen();
 
         mParentView = (FrameLayout) activity.getWindow().getDecorView();
         sp = activity.getSharedPreferences(NewbieGuide.TAG, Activity.MODE_PRIVATE);
@@ -80,7 +82,9 @@ public class Controller {
         if (layoutResId != 0) {
             View view = LayoutInflater.from(activity).inflate(layoutResId, guideLayout, false);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.topMargin = ScreenUtils.getStatusBarHeight(activity);
+            if (!fullScreen) {
+                params.topMargin = ScreenUtils.getStatusBarHeight(activity);
+            }
             params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
             if (viewIds != null) {
                 for (int viewId : viewIds) {
