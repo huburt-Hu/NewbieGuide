@@ -39,59 +39,60 @@ Android 快速实现新手引导层的库
 
 ## 此库依赖
 
-```
-    compile 'com.android.support:appcompat-v7:25.3.1'
-``` 
+
+`
+compile 'com.android.support:appcompat-v7:25.3.1'
+`
 
 ## 导入
 
 项目的build.gradle添加
 
- ```
+ `
 allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
 		}
 	}
- ```
+ `
 
 module的build.gradle添加
 
- ```
+ `
  dependencies {
 	  compile 'com.github.huburt-Hu:NewbieGuide:v1.2.0'
 	}
- ```
+ `
 
 如果你的项目中使用了appcompat-v7，可以排除此库对v7的引用，避免版本混淆
 
- ```
+ `
  dependencies {
 	  compile ('com.github.huburt-Hu:NewbieGuide:v1.2.0') {
             exclude group: 'com.android.support'
       }
  }
- ```
+ `
 
 ## 使用
 
 ### 基本使用：
 
- ```
+```
 NewbieGuide.with(this)//传入activity
                 .setLabel("guide1")//设置引导层标示，用于区分不同引导层，必传！否则报错
                 .addHighLight(textView, HighLight.Type.RECTANGLE)//添加需要高亮的view
                 .setLayoutRes(R.layout.view_guide)//自定义的提示layout，不要添加背景色，引导层背景色通过setBackgroundColor()设置
                 .show();//显示引导层
- ```
+```
 
 ### 更多参数
 
 
  ```
-        //新增多页模式，即一个引导层显示多页引导内容
-        NewbieGuide.with(this)
+ //新增多页模式，即一个引导层显示多页引导内容
+ NewbieGuide.with(this)
                 .setLabel("page")//设置引导层标示区分不同引导层，必传！否则报错
                 .setOnGuideChangedListener(new OnGuideChangedListener() {
                     @Override
@@ -181,6 +182,7 @@ NewbieGuide.with(this)//传入activity
 
 ## License
 
+
 ```
  Copyright 2017 huburt-Hu
 
@@ -195,4 +197,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 ```
+
