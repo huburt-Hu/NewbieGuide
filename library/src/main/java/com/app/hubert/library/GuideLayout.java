@@ -19,7 +19,8 @@ import java.util.List;
  */
 public class GuideLayout extends RelativeLayout {
 
-    private int mBackgroundColor = 0xb2000000;
+    public static final int DEFAULT_BACKGROUND_COLOR = 0xb2000000;
+    private int mBackgroundColor = DEFAULT_BACKGROUND_COLOR;
     private Paint mPaint;
     private List<HighLight> highLights;
 
@@ -84,6 +85,10 @@ public class GuideLayout extends RelativeLayout {
     }
 
     public void setBackgroundColor(int backgroundColor) {
-        this.mBackgroundColor = backgroundColor;
+        if (backgroundColor != 0) {
+            this.mBackgroundColor = backgroundColor;
+        } else {
+            mBackgroundColor = DEFAULT_BACKGROUND_COLOR;
+        }
     }
 }

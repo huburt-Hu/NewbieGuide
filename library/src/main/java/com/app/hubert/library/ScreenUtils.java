@@ -60,7 +60,7 @@ public class ScreenUtils {
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0)
             height = context.getResources().getDimensionPixelSize(resourceId);
-        Log.e("Hubert", "状态栏的高度:" + height);
+        Log.i("NewbieGuide", "状态栏的高度:" + height);
         return height;
     }
 

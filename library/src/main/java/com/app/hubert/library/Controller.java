@@ -30,15 +30,13 @@ public class Controller {
     private Fragment fragment;
     private android.support.v4.app.Fragment v4Fragment;
     private Activity activity;
-    private List<HighLight> list = new ArrayList<>();
+
     private OnGuideChangedListener onGuideChangedListener;
-    private boolean everyWhereCancelable = true;
-    private int backgroundColor;
+    private OnPageChangedListener onPageChangedListener;
     private String label;
     private boolean alwaysShow;
-    private int layoutResId;
-    private int[] viewIds;
-    private boolean fullScreen;
+    private List<GuidePage> guidePages;
+    private int current;
 
     private FrameLayout mParentView;
     private GuideLayout guideLayout;
@@ -48,17 +46,14 @@ public class Controller {
         this.activity = builder.getActivity();
         this.fragment = builder.getFragment();
         this.v4Fragment = builder.getV4Fragment();
-        this.list = builder.getList();
-        this.backgroundColor = builder.getBackgroundColor();
         this.onGuideChangedListener = builder.getOnGuideChangedListener();
-        this.everyWhereCancelable = builder.isEveryWhereCancelable();
+        this.onPageChangedListener = builder.getOnPageChangedListener();
         this.label = builder.getLabel();
         this.alwaysShow = builder.isAlwaysShow();
-        this.layoutResId = builder.getLayoutResId();
-        this.viewIds = builder.getViewIds();
-        this.fullScreen = builder.isFullScreen();
+        this.guidePages = builder.getGuidePages();
 
         mParentView = (FrameLayout) activity.getWindow().getDecorView();
+        guideLayout = new GuideLayout(activity);
         sp = activity.getSharedPreferences(NewbieGuide.TAG, Activity.MODE_PRIVATE);
     }
 
@@ -72,50 +67,43 @@ public class Controller {
             boolean showed = sp.getBoolean(label, false);
             if (showed) return NewbieGuide.FAILED;
         }
+        //fix oppo等部分手机无法关闭硬件加速问题
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-        guideLayout = new GuideLayout(activity);
-        guideLayout.setHighLights(list);
-        if (backgroundColor != 0)
-            guideLayout.setBackgroundColor(backgroundColor);
 
-        if (layoutResId != 0) {
-            View view = LayoutInflater.from(activity).inflate(layoutResId, guideLayout, false);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            if (!fullScreen) {
-                params.topMargin = ScreenUtils.getStatusBarHeight(activity);
-            }
-            params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
-            if (viewIds != null) {
-                for (int viewId : viewIds) {
-                    View click = view.findViewById(viewId);
-                    if (click != null) {
-                        click.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                remove();
-                            }
-                        });
-                    } else {
-                        Log.e("NewbieGuide", "can't find the view by id : " + viewId + " which used to remove guide layout");
+        if (guidePages != null && guidePages.size() > 0) {
+            current = 0;
+            GuidePage page = guidePages.get(0);
+            updatePage(page);
+            mParentView.addView(guideLayout, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            if (onGuideChangedListener != null) onGuideChangedListener.onShowed(this);
+            if (onPageChangedListener != null) onPageChangedListener.onPageChanged(current);
+            sp.edit().putBoolean(label, true).apply();
+            guideLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (guidePages.get(current).isEveryWhereCancelable()) {
+                        nextOrRemove();
                     }
                 }
-            }
-            guideLayout.addView(view, params);
-        }
-
-        mParentView.addView(guideLayout, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        if (onGuideChangedListener != null) onGuideChangedListener.onShowed(this);
-        sp.edit().putBoolean(label, true).apply();
-        if (everyWhereCancelable) {
-            guideLayout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    remove();
-                    return true;
-                }
             });
+            addListenerFragment();
+        } else {
+            throw new IllegalStateException();
         }
+        return NewbieGuide.SUCCESS;
+    }
+
+    private void nextOrRemove() {
+        if (current < guidePages.size() - 1) {
+            updatePage(guidePages.get(++current));
+            if (onPageChangedListener != null) onPageChangedListener.onPageChanged(current);
+        } else {
+            remove();
+        }
+    }
+
+    private void addListenerFragment() {
         //fragment监听销毁界面关闭引导层
         if (fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             compatibleFragment(fragment);
@@ -128,6 +116,7 @@ public class Controller {
             listenerFragment.setFragmentLifecycle(new FragmentLifecycleAdapter() {
                 @Override
                 public void onDestroyView() {
+                    Log.i("NewbieGuide", "ListenerFragment.onDestroyView");
                     remove();
                 }
             });
@@ -143,12 +132,47 @@ public class Controller {
             v4ListenerFragment.setFragmentLifecycle(new FragmentLifecycleAdapter() {
                 @Override
                 public void onDestroyView() {
-                    Log.e("NewbieGuide", "onDestroyView");
+                    Log.i("NewbieGuide", "v4ListenerFragment.onDestroyView");
                     remove();
                 }
             });
         }
-        return NewbieGuide.SUCCESS;
+    }
+
+    private void updatePage(GuidePage page) {
+        guideLayout.setHighLights(page.getHighLights());
+        guideLayout.setBackgroundColor(page.getBackgroundColor());
+        guideLayout.removeAllViews();
+        if (page.getLayoutResId() != 0) {
+            View view = LayoutInflater.from(activity).inflate(page.getLayoutResId(), guideLayout, false);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (!page.isFullScreen()) {
+                params.topMargin = ScreenUtils.getStatusBarHeight(activity);
+            }
+            params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
+            int[] viewIds = page.getViewIds();
+            if (viewIds != null) {
+                for (int viewId : viewIds) {
+                    View click = view.findViewById(viewId);
+                    if (click != null) {
+                        click.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                nextOrRemove();
+                            }
+                        });
+                    } else {
+                        Log.e("NewbieGuide", "can't find the view by id : " + viewId + " which used to remove guide layout");
+                    }
+                }
+            }
+            guideLayout.addView(view, params);
+        }
+        guideLayout.invalidate();
+    }
+
+    public void resetLabel() {
+        resetLabel(label);
     }
 
     /**
@@ -165,6 +189,10 @@ public class Controller {
             ((ViewGroup) guideLayout.getParent()).removeView(guideLayout);
             if (onGuideChangedListener != null) onGuideChangedListener.onRemoved(this);
         }
+        removeListenerFragment();
+    }
+
+    private void removeListenerFragment() {
         //隐藏引导层时移除监听fragment
         if (fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             FragmentManager fm = fragment.getChildFragmentManager();

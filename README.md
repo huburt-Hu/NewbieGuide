@@ -13,15 +13,27 @@ and of course, the parameter configuration can be used to satisfy different disp
 
 It is very convenient to adjust the position of the text and image through the custom layout.
 
-## Change Log
-
-v1.1.0 pre-release Add fragment support and monitor fragment's onDestroyView to destroy the NewbieGuide layer
-
 ## Document
 
 * [中文](https://github.com/huburt-Hu/NewbieGuide/blob/master/doc/README-zh.md)
 
-## 效果
+
+## Change Log
+
+**v1.2.0**
+
+Modify the implementation to support more than one guide page display.
+
+**v1.1.1**
+
+Optimize the destruction time of listenerFragment
+
+**v1.1.0 pre-release**
+
+Add fragment support and monitor fragment's onDestroyView to destroy the NewbieGuide layer
+
+
+## Effect
 
 Change the size of the highlighted view need't adjusts the code where showing the guide layer
 
@@ -36,6 +48,7 @@ The guide layer's XML can be fully customizable, just you like
 ## Download
 
 Project build.gradle adds
+
 ```
 allprojects {
 		repositories {
@@ -46,11 +59,22 @@ allprojects {
  ```
  
 build.gradle of module adds
+
  ```
  dependencies {
 	  compile 'com.github.huburt-Hu:NewbieGuide:v1.1.0'
 	}
  ```
+
+If you use appcompat-v7 on your project, you can exclude the library's references to v7 and avoid conflict
+
+```
+ dependencies {
+	  compile ('com.github.huburt-Hu:NewbieGuide:v1.1.1') {
+            exclude group: 'com.android.support'
+      }
+ }
+```
 
 ## Usage
  
@@ -65,27 +89,52 @@ NewbieGuide.with(this)//activity or fragment
 ```
 ### More parameter configuration
 
+
 ```
-Controller controller = NewbieGuide.with(this)
-                .setOnGuideChangedListener(new OnGuideChangedListener() {//add listener
+        NewbieGuide.with(this)
+                .setLabel("page")//Set the guide layer labeling to distinguish different guide layers
+                .setOnGuideChangedListener(new OnGuideChangedListener() {
                     @Override
                     public void onShowed(Controller controller) {
+                        Log.e(TAG, "NewbieGuide onShowed: ");
                         //when guide layer display
                     }
 
                     @Override
                     public void onRemoved(Controller controller) {
-                        //when guide layer dismiss
+                        Log.e(TAG, "NewbieGuide  onRemoved: ");
+                        //when guide layer dismiss（Multi-page switching will not be triggered）
                     }
                 })
-                .setBackgroundColor(Color.BLACK)//Set the background color of the guide layer and suggest translucent. The default background color is: 0xb2000000
-                .setEveryWhereCancelable(false)//The Settings click anywhere to dismiss, and default is true
-                .setLayoutRes(R.layout.view_guide, R.id.textView)//The second variable parameter is to click on the view's id of the hidden guide layer view
-                .alwaysShow(true)//Show the boot layer each time,default is false
-                .build();//Build the controller for the guide layer
-        controller.resetLabel("guide1");
-        controller.remove();//remove the guide layer
-        controller.show();//show the guide layer
+                .setOnPageChangedListener(new OnPageChangedListener() {
+                    @Override
+                    public void onPageChanged(int page) {
+                        Log.e(TAG, "NewbieGuide  onPageChanged: " + page);
+                        //The boot page switch, page for the current page position, starting at 0
+                    }
+                })
+                .alwaysShow(true)//If the boot layer is displayed each time, the default false is displayed only once
+                /*-------------The above element is the boot layer attribute--------------*/
+
+                .addHighLight(textView)//Set the highlighted view
+                .setLayoutRes(R.layout.view_guide)
+                .asPage()
+                /*------------- The properties of the first page boot page --------------*/
+
+                .addHighLight(button)
+                .setLayoutRes(R.layout.view_guide)
+                .asPage()
+                /*------------- The second page of the boot page properties --------------*/
+
+                .addHighLight(textView)
+                .setLayoutRes(R.layout.view_guide_custom, R.id.iv)
+                .setEveryWhereCancelable(false)
+                .fullScreen(true)
+                .setBackgroundColor(getResources().getColor(R.color.testColor))
+//                .asPage()//If only one or the last page can be omitted
+                /*------------- The third page of the boot page properties --------------*/
+
+                .show();
 ```
 
 ## License
