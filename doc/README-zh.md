@@ -60,14 +60,15 @@ module的build.gradle添加
 
 ```
  dependencies {
-	  compile 'com.github.huburt-Hu:NewbieGuide:v1.1.1'
+	  compile 'com.github.huburt-Hu:NewbieGuide:v1.2.0'
 	}
 ```
+
 如果你的项目中使用了appcompat-v7，可以排除此库对v7的引用，避免版本混淆
 
 ```
  dependencies {
-	  compile ('com.github.huburt-Hu:NewbieGuide:v1.1.1') {
+	  compile ('com.github.huburt-Hu:NewbieGuide:v1.2.0') {
             exclude group: 'com.android.support'
       }
  }
@@ -76,7 +77,6 @@ module的build.gradle添加
 ## 使用
 
 ### 基本使用：
-
 
 ```
 NewbieGuide.with(this)//传入activity
@@ -87,6 +87,7 @@ NewbieGuide.with(this)//传入activity
 ```
 
 ### 更多参数
+
 
 ```
         //新增多页模式，即一个引导层显示多页引导内容
