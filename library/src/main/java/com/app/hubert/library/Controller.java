@@ -88,12 +88,17 @@ public class Controller {
             params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
             if (viewIds != null) {
                 for (int viewId : viewIds) {
-                    view.findViewById(viewId).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            remove();
-                        }
-                    });
+                    View click = view.findViewById(viewId);
+                    if (click != null) {
+                        click.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                remove();
+                            }
+                        });
+                    } else {
+                        Log.e("NewbieGuide", "can't find the view by id : " + viewId + " which used to remove guide layout");
+                    }
                 }
             }
             guideLayout.addView(view, params);
