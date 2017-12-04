@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -15,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +23,7 @@ import java.util.List;
  */
 public class Controller {
 
-    public static final String TAG = "listener_fragment";
+    public static final String LISTENER_FRAGMENT = "listener_fragment";
 
     private Fragment fragment;
     private android.support.v4.app.Fragment v4Fragment;
@@ -55,6 +53,28 @@ public class Controller {
         mParentView = (FrameLayout) activity.getWindow().getDecorView();
         guideLayout = new GuideLayout(activity);
         sp = activity.getSharedPreferences(NewbieGuide.TAG, Activity.MODE_PRIVATE);
+
+    }
+
+    //fix #13 nubia view.getLocationOnScreen获取异常（没有包含statusBar高度）
+    private void fixStatusBarOffset() {
+        final View root = activity.findViewById(android.R.id.content);
+        if (root != null) {
+            root.post(new Runnable() {
+                @Override
+                public void run() {
+                    int[] location = new int[2];
+                    root.getLocationOnScreen(location);
+                    int top = location[1];
+//                    top = 0;//test
+                    LogUtil.i("contentView top:" + top);
+                    int statusBarHeight = ScreenUtils.getStatusBarHeight(activity);
+                    if (top < statusBarHeight) {
+                        guideLayout.setOffset(statusBarHeight - top);
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -88,8 +108,9 @@ public class Controller {
                 }
             });
             addListenerFragment();
+            fixStatusBarOffset();
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException();//不应该出现的状态，检查Builder类中List<GuidePage>
         }
         return NewbieGuide.SUCCESS;
     }
@@ -108,15 +129,15 @@ public class Controller {
         if (fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             compatibleFragment(fragment);
             FragmentManager fm = fragment.getChildFragmentManager();
-            ListenerFragment listenerFragment = (ListenerFragment) fm.findFragmentByTag(TAG);
+            ListenerFragment listenerFragment = (ListenerFragment) fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (listenerFragment == null) {
                 listenerFragment = new ListenerFragment();
-                fm.beginTransaction().add(listenerFragment, TAG).commitAllowingStateLoss();
+                fm.beginTransaction().add(listenerFragment, LISTENER_FRAGMENT).commitAllowingStateLoss();
             }
             listenerFragment.setFragmentLifecycle(new FragmentLifecycleAdapter() {
                 @Override
                 public void onDestroyView() {
-                    Log.i("NewbieGuide", "ListenerFragment.onDestroyView");
+                    LogUtil.i( "ListenerFragment.onDestroyView");
                     remove();
                 }
             });
@@ -124,15 +145,15 @@ public class Controller {
 
         if (v4Fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
-            V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(TAG);
+            V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment == null) {
                 v4ListenerFragment = new V4ListenerFragment();
-                v4Fm.beginTransaction().add(v4ListenerFragment, TAG).commitAllowingStateLoss();
+                v4Fm.beginTransaction().add(v4ListenerFragment, LISTENER_FRAGMENT).commitAllowingStateLoss();
             }
             v4ListenerFragment.setFragmentLifecycle(new FragmentLifecycleAdapter() {
                 @Override
                 public void onDestroyView() {
-                    Log.i("NewbieGuide", "v4ListenerFragment.onDestroyView");
+                    LogUtil.i( "v4ListenerFragment.onDestroyView");
                     remove();
                 }
             });
@@ -162,7 +183,7 @@ public class Controller {
                             }
                         });
                     } else {
-                        Log.e("NewbieGuide", "can't find the view by id : " + viewId + " which used to remove guide layout");
+                        Log.e(NewbieGuide.TAG, "can't find the view by id : " + viewId + " which used to remove guide layout");
                     }
                 }
             }
@@ -196,14 +217,14 @@ public class Controller {
         //隐藏引导层时移除监听fragment
         if (fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             FragmentManager fm = fragment.getChildFragmentManager();
-            ListenerFragment listenerFragment = (ListenerFragment) fm.findFragmentByTag(TAG);
+            ListenerFragment listenerFragment = (ListenerFragment) fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (listenerFragment != null) {
                 fm.beginTransaction().remove(listenerFragment).commitAllowingStateLoss();
             }
         }
         if (v4Fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
-            V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(TAG);
+            V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment != null) {
                 v4Fm.beginTransaction().remove(v4ListenerFragment).commitAllowingStateLoss();
             }

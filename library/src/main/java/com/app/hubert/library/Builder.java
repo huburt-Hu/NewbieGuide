@@ -153,12 +153,7 @@ public class Builder {
      * @return controller
      */
     public Controller build() {
-        if (TextUtils.isEmpty(label)) {
-            throw new IllegalArgumentException("缺少必要参数：label,通过setLabel()方法设置");
-        }
-        if (!guidePages.contains(currentPage) && !currentPage.isEmpty()) {
-            guidePages.add(currentPage);
-        }
+        checkAndSaveAsPage();
         return new Controller(this);
     }
 
@@ -168,15 +163,22 @@ public class Builder {
      * @return controller
      */
     public Controller show() {
+        checkAndSaveAsPage();
+        Controller controller = new Controller(this);
+        controller.show();
+        return controller;
+    }
+
+    private void checkAndSaveAsPage() {
         if (TextUtils.isEmpty(label)) {
-            throw new IllegalArgumentException("缺少必要参数：label,通过setLabel()方法设置");
+            throw new IllegalArgumentException("the param 'label' is missing, please call setLabel()");
+        }
+        if (activity == null && (fragment != null || v4Fragment != null)) {
+            throw new IllegalStateException("activity is null, please make sure that fragment is showing when call NewbieGuide");
         }
         if (!guidePages.contains(currentPage) && !currentPage.isEmpty()) {
             guidePages.add(currentPage);
         }
-        Controller controller = new Controller(this);
-        controller.show();
-        return controller;
     }
 
     boolean isAlwaysShow() {

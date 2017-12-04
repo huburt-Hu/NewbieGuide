@@ -24,6 +24,8 @@ public class GuideLayout extends RelativeLayout {
     private Paint mPaint;
     private List<HighLight> highLights;
 
+    private int offset;//fix #13 nubia view.getLocationOnScreen获取异常（没有包含statusBar高度）
+
     public GuideLayout(Context context) {
         this(context, null);
     }
@@ -61,6 +63,8 @@ public class GuideLayout extends RelativeLayout {
         if (highLights != null) {
             for (HighLight highLight : highLights) {
                 RectF rectF = highLight.getRectF();
+                rectF.top = rectF.top + offset;
+                rectF.bottom = rectF.bottom + offset;
                 switch (highLight.getType()) {
                     case CIRCLE:
                         canvas.drawCircle(rectF.centerX(), rectF.centerY(), highLight.getRadius(), mPaint);
@@ -90,5 +94,10 @@ public class GuideLayout extends RelativeLayout {
         } else {
             mBackgroundColor = DEFAULT_BACKGROUND_COLOR;
         }
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+        invalidate();
     }
 }

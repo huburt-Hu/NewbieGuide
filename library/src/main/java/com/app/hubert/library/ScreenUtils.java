@@ -54,13 +54,16 @@ public class ScreenUtils {
      * 获取状态栏高度
      */
     public static int getStatusBarHeight(Context context) {
-        // 默认为38
-        int height = 38;
+        // 一般是25dp
+        int height = dp2px(context, 20);
+        LogUtil.i("common statusBar height:" + height);
         //获取status_bar_height资源的ID
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0)
+        if (resourceId > 0) {
             height = context.getResources().getDimensionPixelSize(resourceId);
-        Log.i("NewbieGuide", "状态栏的高度:" + height);
+            LogUtil.i("real statusBar height:" + height);
+        }
+        LogUtil.i("finally statusBar height:" + height);
         return height;
     }
 
@@ -98,7 +101,7 @@ public class ScreenUtils {
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0)
             height = resources.getDimensionPixelSize(resourceId);
-        Log.e("Hubert", "NavigationBar的高度:" + height);
+        LogUtil.i("NavigationBar的高度:" + height);
         return height;
     }
 }

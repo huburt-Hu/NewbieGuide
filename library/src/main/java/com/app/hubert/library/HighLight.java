@@ -1,6 +1,7 @@
 package com.app.hubert.library;
 
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -40,6 +41,7 @@ public class HighLight {
             rectF.top = location[1];
             rectF.right = location[0] + mHole.getWidth();
             rectF.bottom = location[1] + mHole.getHeight();
+            LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
         }
         return rectF;
     }

@@ -20,7 +20,7 @@ public class V4ListenerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("hubert", "onStart: ");
+        LogUtil.d("onStart: ");
         mFragmentLifecycle.onStart();
     }
 
@@ -39,7 +39,7 @@ public class V4ListenerFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("hubert", "onDestroy: ");
+        LogUtil.d("onDestroy: ");
         mFragmentLifecycle.onDestroy();
     }
 }

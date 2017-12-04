@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
                 .addHighLight(textView)//设置高亮的view
                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
+                .fullScreen(true)
                 .asPage()//保存参数为第一页
                 /*------------- 第一页引导页的属性 --------------*/
 
