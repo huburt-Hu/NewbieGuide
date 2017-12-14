@@ -18,6 +18,7 @@ public class LogUtil {
      * 修改打印级别
      */
     public static final int level = NONE;
+//    public static final int level = Log.VERBOSE;
 
     /**
      * 得到tag（所在类.方法（L:行））

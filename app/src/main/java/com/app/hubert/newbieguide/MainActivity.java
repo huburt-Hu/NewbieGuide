@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StatusBarUtil.setTranslucent(this, 0);
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.tv);
         textView.setOnClickListener(new View.OnClickListener() {

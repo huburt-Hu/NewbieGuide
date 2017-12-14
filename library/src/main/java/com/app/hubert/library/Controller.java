@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,22 +59,25 @@ public class Controller {
 
     //fix #13 nubia view.getLocationOnScreen获取异常（没有包含statusBar高度）
     private void fixStatusBarOffset() {
-        final View root = activity.findViewById(android.R.id.content);
-        if (root != null) {
-            root.post(new Runnable() {
-                @Override
-                public void run() {
-                    int[] location = new int[2];
-                    root.getLocationOnScreen(location);
-                    int top = location[1];
+        String brand = Build.BRAND;
+        if (!TextUtils.isEmpty(brand) && brand.equalsIgnoreCase("nubia")) {
+            final View root = activity.findViewById(android.R.id.content);
+            if (root != null) {
+                root.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int[] location = new int[2];
+                        root.getLocationOnScreen(location);
+                        int top = location[1];
 //                    top = 0;//test
-                    LogUtil.i("contentView top:" + top);
-                    int statusBarHeight = ScreenUtils.getStatusBarHeight(activity);
-                    if (top < statusBarHeight) {
-                        guideLayout.setOffset(statusBarHeight - top);
+                        LogUtil.i("contentView top:" + top);
+                        int statusBarHeight = ScreenUtils.getStatusBarHeight(activity);
+                        if (top < statusBarHeight) {
+                            guideLayout.setOffset(statusBarHeight - top);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -137,7 +141,7 @@ public class Controller {
             listenerFragment.setFragmentLifecycle(new FragmentLifecycleAdapter() {
                 @Override
                 public void onDestroyView() {
-                    LogUtil.i( "ListenerFragment.onDestroyView");
+                    LogUtil.i("ListenerFragment.onDestroyView");
                     remove();
                 }
             });
@@ -153,7 +157,7 @@ public class Controller {
             v4ListenerFragment.setFragmentLifecycle(new FragmentLifecycleAdapter() {
                 @Override
                 public void onDestroyView() {
-                    LogUtil.i( "v4ListenerFragment.onDestroyView");
+                    LogUtil.i("v4ListenerFragment.onDestroyView");
                     remove();
                 }
             });
