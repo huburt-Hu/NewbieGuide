@@ -20,9 +20,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StatusBarUtil.setTranslucent(this, 0);
+//        StatusBarUtil.setTranslucent(this, 0);
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.tv);
+        TextView tvBottom = (TextView) findViewById(R.id.tv_bottom);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 /*-------------以上元素为引导层属性--------------*/
 
                 .addHighLight(textView)//设置高亮的view
+                .addHighLight(tvBottom)
                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
                 .fullScreen(true)
                 .asPage()//保存参数为第一页
