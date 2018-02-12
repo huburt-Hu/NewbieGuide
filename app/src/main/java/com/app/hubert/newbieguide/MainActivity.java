@@ -4,14 +4,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.app.hubert.library.Controller;
-import com.app.hubert.library.NewbieGuide;
-import com.app.hubert.library.OnGuideChangedListener;
-import com.app.hubert.library.OnPageChangedListener;
-import com.jaeger.library.StatusBarUtil;
+import com.app.hubert.guide.core.Controller;
+import com.app.hubert.guide.NewbieGuide;
+import com.app.hubert.guide.listener.OnGuideChangedListener;
+import com.app.hubert.guide.listener.OnLayoutInflatedListener;
+import com.app.hubert.guide.listener.OnPageChangedListener;
+import com.app.hubert.guide.model.HighLight;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                })
 //                .addHighLight(textView)
-//                .setEveryWhereCancelable(false)//设置点击任何区域消失，默认为true
+//                .setEverywhereCancelable(false)//设置点击任何区域消失，默认为true
 //                .setLayoutRes(R.layout.view_guide, R.id.iv)//自定义的提示layout,第二个可变参数为点击隐藏引导层view的id
 //                .alwaysShow(true)//是否每次都显示引导层，默认false
 //                .build();
@@ -78,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
 //        controller.remove();
 //        controller.show();
 
+        Animation enterAnimation = new AlphaAnimation(0f, 1f);
+        enterAnimation.setDuration(600);
+        enterAnimation.setFillAfter(true);
+
+        Animation exitAnimation = new AlphaAnimation(1f, 0f);
+        exitAnimation.setDuration(600);
+        exitAnimation.setFillAfter(true);
 
         //新增多页模式，即一个引导层显示多页引导内容
         NewbieGuide.with(this)
@@ -106,24 +116,33 @@ public class MainActivity extends AppCompatActivity {
                 /*-------------以上元素为引导层属性--------------*/
 
                 .addHighLight(textView)//设置高亮的view
-                .addHighLight(tvBottom)
+                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE, 0, 10)
                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
-                .fullScreen(true)
+                .setEnterAnimation(enterAnimation)
+                .setExitAnimation(exitAnimation)
                 .asPage()//保存参数为第一页
                 /*------------- 第一页引导页的属性 --------------*/
 
                 .addHighLight(button)//从新设置第二页的参数
+                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                    @Override
+                    public void onLayoutInflated(View view) {
+                        TextView tv = view.findViewById(R.id.textView2);
+                        tv.setText("onLayoutInflated");
+                    }
+                })
                 .setLayoutRes(R.layout.view_guide)
+                .addHighLight(tvBottom)
                 .asPage()
                 /*------------- 第二页引导页的属性 --------------*/
 
                 .addHighLight(textView)
                 .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的空间id
                 .setEveryWhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
-                .fullScreen(true)//是否全屏，即是否包含状态栏，默认false，设置为true需要Activity设置为全屏或者沉浸式状态栏
                 .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
 //                .asPage()//只有一页或者最后一页可以省略
                 /*------------- 第三页引导页的属性 --------------*/
+
 
                 .show();//显示引导层
     }

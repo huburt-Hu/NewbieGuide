@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 
-import com.app.hubert.library.HighLight;
-import com.app.hubert.library.NewbieGuide;
+import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.NewbieGuide;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class GridViewActivity extends AppCompatActivity {
                 View childAt = gridView.getChildAt(1);
                 NewbieGuide.with(GridViewActivity.this)
                         .setLabel("grid_view_guide")
-                        .addHighLight(childAt, HighLight.Type.RECTANGLE)
+                        .addHighLight(childAt, HighLight.Shape.RECTANGLE)
                         .setLayoutRes(R.layout.view_guide)
                         .alwaysShow(true)
                         .show();
