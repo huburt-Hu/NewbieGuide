@@ -5,13 +5,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -48,11 +46,12 @@ public class Controller {
     private boolean alwaysShow;
     private List<GuidePage> guidePages;
     private int current;//当前页
+    private GuideLayout currentLayout;
 
     private FrameLayout mParentView;
-    private GuideLayout guideLayout;
     private SharedPreferences sp;
-    private int topMargin;
+
+    private int topMargin;//statusBar的高度
 
     public Controller(Builder builder) {
         this.activity = builder.activity;
@@ -65,7 +64,6 @@ public class Controller {
         this.guidePages = builder.guidePages;
 
         mParentView = (FrameLayout) activity.getWindow().getDecorView();
-        guideLayout = new GuideLayout(activity);
         sp = activity.getSharedPreferences(NewbieGuide.TAG, Activity.MODE_PRIVATE);
 
     }
@@ -89,31 +87,85 @@ public class Controller {
             public void run() {
                 getTopMargin();
                 if (guidePages == null || guidePages.size() == 0) {
-                    throw new IllegalStateException();//不应该出现的状态，检查Builder类中List<GuidePage>
+                    throw new IllegalStateException("there is no guide to show!! Please add alast one Page.");
                 }
                 current = 0;
-                GuidePage page = guidePages.get(0);
-                updatePage(page);
-                mParentView.addView(guideLayout, new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                showGuidePage();
                 if (onGuideChangedListener != null) {
                     onGuideChangedListener.onShowed(Controller.this);
                 }
-                if (onPageChangedListener != null) {
-                    onPageChangedListener.onPageChanged(current);
-                }
-                sp.edit().putBoolean(label, true).apply();
-                guideLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (guidePages.get(current).isEverywhereCancelable()) {
-                            nextOrRemove();
-                        }
-                    }
-                });
                 addListenerFragment();
+                sp.edit().putBoolean(label, true).apply();
             }
         });
+    }
+
+    /**
+     * 显示current引导页
+     */
+    private void showGuidePage() {
+        GuidePage page = guidePages.get(current);
+        GuideLayout guideLayout = new GuideLayout(activity);
+        guideLayout.setGuidePage(page);
+        addCustomToLayout(guideLayout, page);
+        guideLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
+            @Override
+            public void onGuideLayoutDismiss(GuideLayout guideLayout) {
+                if (current < guidePages.size() - 1) {
+                    current++;
+                    showGuidePage();
+                    if (onPageChangedListener != null) {
+                        onPageChangedListener.onPageChanged(current);
+                    }
+                } else {
+                    if (onGuideChangedListener != null) {
+                        onGuideChangedListener.onRemoved(Controller.this);
+                    }
+                    removeListenerFragment();
+                }
+            }
+        });
+        mParentView.addView(guideLayout, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        currentLayout = guideLayout;
+    }
+
+    /**
+     * 将自定义布局填充到guideLayout中
+     *
+     * @param guideLayout
+     */
+    private void addCustomToLayout(final GuideLayout guideLayout, GuidePage guidePage) {
+        guideLayout.removeAllViews();
+        int layoutResId = guidePage.getLayoutResId();
+        if (layoutResId != 0) {
+            View view = LayoutInflater.from(activity).inflate(layoutResId, guideLayout, false);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.topMargin = topMargin;
+            params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
+            int[] viewIds = guidePage.getClickToDismissIds();
+            if (viewIds != null && viewIds.length > 0) {
+                for (int viewId : viewIds) {
+                    View click = view.findViewById(viewId);
+                    if (click != null) {
+                        click.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                guideLayout.remove();
+                            }
+                        });
+                    } else {
+                        Log.w(NewbieGuide.TAG, "can't find the view by id : " + viewId + " which used to remove guide page");
+                    }
+                }
+            }
+            OnLayoutInflatedListener inflatedListener = guidePage.getOnLayoutInflatedListener();
+            if (inflatedListener != null) {
+                inflatedListener.onLayoutInflated(view);
+            }
+            guideLayout.addView(view, params);
+        }
     }
 
     private void getTopMargin() {
@@ -122,55 +174,6 @@ public class Controller {
         contentView.getLocationOnScreen(location);
         topMargin = location[1];
         LogUtil.i("contentView top:" + topMargin);
-        //fix #13 nubia view.getLocationOnScreen获取异常（没有包含statusBar高度）
-        String brand = Build.BRAND;
-        if (topMargin == 0
-                && !TextUtils.isEmpty(brand)
-                && brand.equalsIgnoreCase("nubia")) {
-            guideLayout.setOffset(topMargin);
-        }
-    }
-
-    private void nextOrRemove() {
-        if (current < guidePages.size() - 1) {
-            updatePage(guidePages.get(++current));
-            if (onPageChangedListener != null) onPageChangedListener.onPageChanged(current);
-        } else {
-            remove();
-        }
-    }
-
-    private void updatePage(final GuidePage page) {
-        guideLayout.setHighLights(page.getHighLights());
-        guideLayout.setBackgroundColor(page.getBackgroundColor());
-        guideLayout.removeAllViews();
-        if (page.getLayoutResId() != 0) {
-            View view = LayoutInflater.from(activity).inflate(page.getLayoutResId(), guideLayout, false);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.topMargin = topMargin;
-            params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
-            int[] viewIds = page.getClickToDismissIds();
-            if (viewIds != null && viewIds.length > 0) {
-                for (int viewId : viewIds) {
-                    View click = view.findViewById(viewId);
-                    if (click != null) {
-                        click.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                nextOrRemove();
-                            }
-                        });
-                    } else {
-                        Log.e(NewbieGuide.TAG, "can't find the view by id : " + viewId + " which used to remove guide page");
-                    }
-                }
-            }
-            OnLayoutInflatedListener inflatedListener = page.getOnLayoutInflatedListener();
-            if (inflatedListener != null) inflatedListener.onLayoutInflated(view);
-            guideLayout.addView(view, params);
-        }
-        guideLayout.invalidate();
     }
 
     public void resetLabel() {
@@ -186,18 +189,22 @@ public class Controller {
         sp.edit().putBoolean(label, false).apply();
     }
 
+    /**
+     * 中断引导层的显示，后续未显示的page将不再显示
+     */
     public void remove() {
-        if (guideLayout != null && guideLayout.getParent() != null) {
-            ((ViewGroup) guideLayout.getParent()).removeView(guideLayout);
-            if (onGuideChangedListener != null) onGuideChangedListener.onRemoved(this);
+        if (currentLayout != null && currentLayout.getParent() != null) {
+            ((ViewGroup) currentLayout.getParent()).removeView(currentLayout);
+            if (onGuideChangedListener != null) {
+                onGuideChangedListener.onRemoved(this);
+            }
         }
-        removeListenerFragment();
     }
 
     private void addListenerFragment() {
         //fragment监听销毁界面关闭引导层
         if (fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-//            compatibleFragment(fragment);
+            compatibleFragment(fragment);
             FragmentManager fm = fragment.getChildFragmentManager();
             ListenerFragment listenerFragment = (ListenerFragment) fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (listenerFragment == null) {
@@ -213,7 +220,7 @@ public class Controller {
             });
         }
 
-        if (v4Fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+        if (v4Fragment != null) {
             android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
             V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment == null) {
@@ -239,7 +246,7 @@ public class Controller {
                 fm.beginTransaction().remove(listenerFragment).commitAllowingStateLoss();
             }
         }
-        if (v4Fragment != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+        if (v4Fragment != null) {
             android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
             V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment != null) {

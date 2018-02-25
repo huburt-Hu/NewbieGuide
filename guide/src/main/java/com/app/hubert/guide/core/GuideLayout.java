@@ -8,9 +8,17 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 
+import com.app.hubert.guide.NewbieGuide;
+import com.app.hubert.guide.listener.AnimationListenerAdapter;
+import com.app.hubert.guide.listener.OnLayoutInflatedListener;
+import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
 
 import java.util.List;
@@ -23,11 +31,10 @@ import java.util.List;
 public class GuideLayout extends RelativeLayout {
 
     public static final int DEFAULT_BACKGROUND_COLOR = 0xb2000000;
-    private int mBackgroundColor = DEFAULT_BACKGROUND_COLOR;
-    private Paint mPaint;
-    private List<HighLight> highLights;
 
-    private int offset;//fix #13 nubia view.getLocationOnScreen获取异常（没有包含statusBar高度）
+    private Paint mPaint;
+    public GuidePage guidePage;
+    private OnGuideLayoutDismissListener listener;
 
     public GuideLayout(Context context) {
         this(context, null);
@@ -62,12 +69,17 @@ public class GuideLayout extends RelativeLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(mBackgroundColor);
+        super.onDraw(canvas);
+        int backgroundColor = guidePage.getBackgroundColor();
+        canvas.drawColor(backgroundColor == 0 ? DEFAULT_BACKGROUND_COLOR : backgroundColor);
+        drawHightLights(canvas);
+    }
+
+    private void drawHightLights(Canvas canvas) {
+        List<HighLight> highLights = guidePage.getHighLights();
         if (highLights != null) {
             for (HighLight highLight : highLights) {
                 RectF rectF = highLight.getRectF();
-                rectF.top = rectF.top + offset;
-                rectF.bottom = rectF.bottom + offset;
                 switch (highLight.getShape()) {
                     case CIRCLE:
                         canvas.drawCircle(rectF.centerX(), rectF.centerY(), highLight.getRadius(), mPaint);
@@ -87,20 +99,57 @@ public class GuideLayout extends RelativeLayout {
         }
     }
 
-    public void setHighLights(List<HighLight> holeList) {
-        highLights = holeList;
-    }
-
-    public void setBackgroundColor(int backgroundColor) {
-        if (backgroundColor != 0) {
-            this.mBackgroundColor = backgroundColor;
-        } else {
-            mBackgroundColor = DEFAULT_BACKGROUND_COLOR;
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Animation enterAnimation = guidePage.getEnterAnimation();
+        if (enterAnimation != null) {
+            startAnimation(enterAnimation);
         }
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
-        invalidate();
+    public void setGuidePage(GuidePage page) {
+        this.guidePage = page;
+        setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (guidePage.isEverywhereCancelable()) {
+                    remove();
+                }
+            }
+        });
     }
+
+    public void setOnGuideLayoutDismissListener(OnGuideLayoutDismissListener listener) {
+        this.listener = listener;
+    }
+
+    public void remove() {
+        Animation exitAnimation = guidePage.getExitAnimation();
+        if (exitAnimation != null) {
+            exitAnimation.setAnimationListener(new AnimationListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    dismiss();
+                }
+            });
+            startAnimation(exitAnimation);
+        } else {
+            dismiss();
+        }
+    }
+
+    private void dismiss() {
+        if (getParent() != null) {
+            ((ViewGroup) getParent()).removeView(this);
+            if (listener != null) {
+                listener.onGuideLayoutDismiss(this);
+            }
+        }
+    }
+
+    public interface OnGuideLayoutDismissListener {
+        void onGuideLayoutDismiss(GuideLayout guideLayout);
+    }
+
 }

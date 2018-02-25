@@ -10,7 +10,8 @@
         android:gravity="center"
         android:maxWidth="200dp"
         android:textSize="15sp"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
         android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,20 +19,18 @@
 
     <ImageView
         android:id="@+id/iv"
-        android:src="@mipmap/ic_launcher_round"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="30dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="62dp"
+        android:src="@mipmap/ic_launcher_round" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/iv"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:layout_marginBottom="13dp"
-        android:text="比如这里来一张图片"
+        android:layout_below="@+id/iv"
+        android:layout_centerHorizontal="true"
+        android:text="比如这里来一张图片,点击这张图片才能消失引导层"
         android:textColor="@android:color/white" />
 </RelativeLayout>

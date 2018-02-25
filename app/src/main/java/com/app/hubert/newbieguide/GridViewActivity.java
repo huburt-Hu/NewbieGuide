@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 
+import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
 import com.app.hubert.guide.NewbieGuide;
 
@@ -41,9 +42,10 @@ public class GridViewActivity extends AppCompatActivity {
                 View childAt = gridView.getChildAt(1);
                 NewbieGuide.with(GridViewActivity.this)
                         .setLabel("grid_view_guide")
-                        .addHighLight(childAt, HighLight.Shape.RECTANGLE)
-                        .setLayoutRes(R.layout.view_guide)
                         .alwaysShow(true)
+                        .addGuidePage(GuidePage.newInstance()
+                                .addHighLight(childAt, HighLight.Shape.RECTANGLE)
+                                .setLayoutRes(R.layout.view_guide))
                         .show();
             }
         });

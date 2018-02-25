@@ -180,6 +180,14 @@ NewbieGuide.with(this)//传入activity
 | remove    |  移除引导层 |
 
 
+## Q&A
+
+1.部分手机出现引导层显示异常，如本应高亮部分变成黑色？
+
+在Manifest中指定开启显示引导层activity的硬件加速
+
+
+
 ## License
 
 
