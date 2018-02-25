@@ -68,6 +68,8 @@ module的build.gradle添加
 
 * v2.x版本使用
 
+改动看似很大，实际上只是把Page单独抽离出来，通过addGuidePage方法添加一页代替之前的asPage，使其符合面对对象。
+
 ```
 NewbieGuide.with(this)
                 .setLabel("page")//设置引导层标示区分不同引导层，必传！否则报错
@@ -143,7 +145,7 @@ NewbieGuide.with(this)
 
 ### GuidePage v1.2.0版本新增
 
-引导页对象，包含一张引导页的信息，如高亮的view，布局，跳转控件id，是否全屏，背景色等。
+引导页对象，包含一张引导页的信息，如高亮的view，布局，跳转控件id，背景色等。
 
 | 方法    |  含义    |
 | ------- | :--------:|
@@ -167,12 +169,15 @@ NewbieGuide.with(this)
 | remove    |  移除引导层 |
 
 
-## Q&A
+## 关于我
 
-1.部分手机出现引导层显示异常，如本应高亮部分变成黑色？
+Github：https://github.com/huburt-Hu
+CSDN：http://blog.csdn.net/Hubert_bing
+简书：https://www.jianshu.com/u/002f99a0df6b
+掘金：https://juejin.im/user/57bb1fdcc4c971006152d7b0/posts
 
-在Manifest中指定开启显示引导层activity的硬件加速
 
+## [Q&A](https://github.com/huburt-Hu/NewbieGuide/wiki/Q&A)
 
 
 ## License
