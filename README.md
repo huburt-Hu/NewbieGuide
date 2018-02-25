@@ -172,8 +172,11 @@ NewbieGuide.with(this)
 ## 关于我
 
 Github：https://github.com/huburt-Hu
+
 CSDN：http://blog.csdn.net/Hubert_bing
+
 简书：https://www.jianshu.com/u/002f99a0df6b
+
 掘金：https://juejin.im/user/57bb1fdcc4c971006152d7b0/posts
 
 
