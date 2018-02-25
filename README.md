@@ -9,20 +9,7 @@ Android 快速实现新手引导层的库
 
 ## 更新日志
 
-**v1.2.0**
-
-修改实现细节以支持多张引导页的显示，现在可以在一个引导层中显示多张引导页，不用再通过监听引导层的消失显示下一张引导层，可以只通过一行链式调用实现多页引导页的显示和切换。
-
-
-**v1.1.1**
-
-优化listenerFragment的销毁时机，原本为依附的fragment销毁才销毁。现在是只要引导层消失，listenerFragment就会销毁。
-新增参数设置：`fullScreen()`，用于设置是否全屏显示
-
-
-**v1.1.0 pre-release**
-
-新增fragment支持，监听fragment的onDestroyView销毁引导层
+[更新日志](https://github.com/huburt-Hu/NewbieGuide/wiki)
 
 
 ## 效果
@@ -48,51 +35,41 @@ compile 'com.android.support:appcompat-v7:25.3.1'
 
 项目的build.gradle添加
 
- `
+```
 allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
 		}
 	}
- `
+```
 
 module的build.gradle添加
 
- `
+```
  dependencies {
-	  compile 'com.github.huburt-Hu:NewbieGuide:v1.2.0'
+	  compile 'com.github.huburt-Hu:NewbieGuide:v2.0.0'
 	}
- `
+```
 
 如果你的项目中使用了appcompat-v7，可以排除此库对v7的引用，避免版本混淆
 
- `
+```
  dependencies {
-	  compile ('com.github.huburt-Hu:NewbieGuide:v1.2.0') {
+	  compile ('com.github.huburt-Hu:NewbieGuide:v2.0.0') {
             exclude group: 'com.android.support'
       }
  }
- `
+```
 
 ## 使用
 
-### 基本使用：
+* [v1.x.x版本使用](https://github.com/huburt-Hu/NewbieGuide/wiki)
+
+* v2.x版本使用
 
 ```
-NewbieGuide.with(this)//传入activity
-                .setLabel("guide1")//设置引导层标示，用于区分不同引导层，必传！否则报错
-                .addHighLight(textView, HighLight.Type.RECTANGLE)//添加需要高亮的view
-                .setLayoutRes(R.layout.view_guide)//自定义的提示layout，不要添加背景色，引导层背景色通过setBackgroundColor()设置
-                .show();//显示引导层
-```
-
-### 更多参数
-
-
- ```
- //新增多页模式，即一个引导层显示多页引导内容
- NewbieGuide.with(this)
+NewbieGuide.with(this)
                 .setLabel("page")//设置引导层标示区分不同引导层，必传！否则报错
                 .setOnGuideChangedListener(new OnGuideChangedListener() {
                     @Override
@@ -115,28 +92,34 @@ NewbieGuide.with(this)//传入activity
                     }
                 })
                 .alwaysShow(true)//是否每次都显示引导层，默认false，只显示一次
-                /*-------------以上元素为引导层属性--------------*/
+                .addGuidePage(//添加一页引导页
+                        GuidePage.newInstance()//创建一个实例
+                                .addHighLight(button)//添加高亮的view
+                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE)
+                                .setLayoutRes(R.layout.view_guide)//设置引导页布局
+                                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                                    @Override
+                                    public void onLayoutInflated(View view) {
+                                        //引导页布局填充后回调，用于初始化
+                                        TextView tv = view.findViewById(R.id.textView2);
+                                        tv.setText("我是动态设置的文本");
+                                    }
+                                })
+                                .setEnterAnimation(enterAnimation)//进入动画
+                                .setExitAnimation(exitAnimation)//退出动画
+                )
+                .addGuidePage(
+                        GuidePage.newInstance()
+                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE,20)
+                                .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
+                                .setEverywhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
+                                .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
+                                .setEnterAnimation(enterAnimation)//进入动画
+                                .setExitAnimation(exitAnimation)//退出动画
+                )
+                .show();//显示引导层(至少需要一页引导页才能显示)
+```
 
-                .addHighLight(textView)//设置高亮的view
-                .setLayoutRes(R.layout.view_guide)//设置引导页布局
-                .asPage()//保存参数为第一页
-                /*------------- 第一页引导页的属性 --------------*/
-
-                .addHighLight(button)//从新设置第二页的参数
-                .setLayoutRes(R.layout.view_guide)
-                .asPage()
-                /*------------- 第二页引导页的属性 --------------*/
-
-                .addHighLight(textView)
-                .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
-                .setEveryWhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
-                .fullScreen(true)//是否全屏，即是否包含状态栏，默认false，设置为true需要Activity设置为全屏或者沉浸式状态栏
-                .setBackgroundColor(getResources().getColor(R.color.testColor))//设置引导页背景色，建议使用有透明度的颜色，默认背景色为：0xb2000000
-//                .asPage()//只有一页或者最后一页可以省略
-                /*------------- 第三页引导页的属性 --------------*/
-
-                .show();//显示引导层
- ```
 
 ## 流程控制
 
@@ -146,28 +129,32 @@ NewbieGuide.with(this)//传入activity
 
 ### Builder
 
-引导层的建造者对象，v1.2.0版本新增引导页（GuidePage）的概念，一个引导层可以包含多个引导页。
+引导层的建造者对象，一个引导层可以包含多个引导页。
 
-| 方法    |  含义    | 归属 |
-| ------- | :--------:| :--------:|
-| setLabel    |  设置引导层标示区分不同引导层，必传！否则报错 | 引导层  |
-| setOnGuideChangedListener    |  设置引导层的显示与消失监听 | 引导层 |
-| setOnPageChangedListener    |  设置引导页切换监听 | 引导层 |
-| alwaysShow    |  是否每次都显示引导层，默认false，只显示一次 | 引导层 |
-| alwaysShow    |  是否每次都显示引导层，默认false，只显示一次 | 引导层 |
-| addHighLight    |  添加引导页高亮的view | 引导页 |
-| setLayoutRes    |  引导页布局，第二个可变参数为点击跳转下一页或者消失引导层的控件id | 引导页 |
-| setEveryWhereCancelable    |  是否点击任意地方跳转下一页或者消失引导层，默认true | 引导页 |
-| fullScreen    |  是否全屏，即是否包含状态栏，默认false，设置为true的前提是Activity设置为全屏或者沉浸式状态栏 | 引导页 |
-| setBackgroundColor    |  设置引导页背景色，建议使用有透明度的颜色，默认背景色为：0xb2000000 | 引导页 |
-| asPage    |  保存此方法前所有引导页的配置为GuidePage，并新建一个GuidePage用于设置下一张引导页的参数，如果只有一页或者最后一页可以省略 | 引导页 |
-| build    |  生成Controller对象，控制引导层的显示，隐藏等操作 | 引导层 |
-| show    |  直接显示引导层，内部是调用Controller的show方法 | 引导层 |
+| 方法    |  含义    |
+| ------- | :--------:|
+| setLabel    |  设置引导层标示区分不同引导层，必传！否则报错 |
+| setOnGuideChangedListener    |  设置引导层的显示与消失监听 |
+| setOnPageChangedListener    |  设置引导页切换监听 |
+| alwaysShow    |  是否每次都显示引导层，默认false，只显示一次 |
+| addGuidePage    |  添加一页引导页 |
+| build    |  生成Controller对象，控制引导层的显示，隐藏等操作 |
+| show    |  直接显示引导层，内部是调用Controller的show方法 |
 
-
-### GuidePage
+### GuidePage v1.2.0版本新增
 
 引导页对象，包含一张引导页的信息，如高亮的view，布局，跳转控件id，是否全屏，背景色等。
+
+| 方法    |  含义    |
+| ------- | :--------:|
+| addHighLight    |  添加引导页高亮的view |
+| setLayoutRes    |  引导页布局，第二个可变参数为点击跳转下一页或者消失引导层的控件id |
+| setEverywhereCancelable    |  是否点击任意地方跳转下一页或者消失引导层，默认true |
+| setBackgroundColor    |  设置引导页背景色，建议使用有透明度的颜色，默认背景色为：0xb2000000 |
+| setOnLayoutInflatedListener    |  设置自定义layout填充监听，用于自定义layout初始化 |
+| setEnterAnimation    |  设置进入动画 |
+| setExitAnimation    |  设置退出动画 |
+
 
 ### Controller
 

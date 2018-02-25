@@ -16,6 +16,7 @@ import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.jaeger.library.StatusBarUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        StatusBarUtil.setTranslucent(this, 0);
+        StatusBarUtil.setTranslucent(this, 0);
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.tv);
         TextView tvBottom = (TextView) findViewById(R.id.tv_bottom);
