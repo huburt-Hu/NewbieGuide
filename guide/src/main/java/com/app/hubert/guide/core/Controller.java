@@ -76,7 +76,9 @@ public class Controller {
     public void show() {
         if (!alwaysShow) {
             boolean showed = sp.getBoolean(label, false);
-            return;
+            if (showed){
+                return ;
+            }
         }
         //fix oppo等部分手机无法关闭硬件加速问题
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
