@@ -1,5 +1,7 @@
 package com.app.hubert.newbieguide;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.hubert.guide.core.Controller;
 import com.app.hubert.guide.NewbieGuide;
@@ -21,6 +24,11 @@ import com.jaeger.library.StatusBarUtil;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
+
+    public static void start(Context context) {
+        Intent starter = new Intent(context, MainActivity.class);
+        context.startActivity(starter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         //新增多页模式，即一个引导层显示多页引导内容
         NewbieGuide.with(this)
                 .setLabel("page")//设置引导层标示区分不同引导层，必传！否则报错
-                .anchor(anchor)
+//                .anchor(anchor)
                 .setOnGuideChangedListener(new OnGuideChangedListener() {
                     @Override
                     public void onShowed(Controller controller) {
@@ -71,14 +79,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setOnPageChangedListener(new OnPageChangedListener() {
+
                     @Override
                     public void onPageChanged(int page) {
-                        Log.e(TAG, "NewbieGuide  onPageChanged: " + page);
                         //引导页切换，page为当前页位置，从0开始
+                        Toast.makeText(MainActivity.this, "引导页切换：" + page, Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setShowCounts(9)
-//                .alwaysShow(true)//是否每次都显示引导层，默认false，只显示一次
+                .alwaysShow(true)//是否每次都显示引导层，默认false，只显示一次
                 .addGuidePage(//添加一页引导页
                         GuidePage.newInstance()//创建一个实例
                                 .addHighLight(button)//添加高亮的view

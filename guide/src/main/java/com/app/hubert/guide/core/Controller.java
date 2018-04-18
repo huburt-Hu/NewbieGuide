@@ -98,8 +98,6 @@ public class Controller {
             }
         }
         //fix oppo等部分手机无法关闭硬件加速问题
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         mParentView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         mParentView.post(new Runnable() {
@@ -134,9 +132,6 @@ public class Controller {
                 if (current < guidePages.size() - 1) {
                     current++;
                     showGuidePage();
-                    if (onPageChangedListener != null) {
-                        onPageChangedListener.onPageChanged(current);
-                    }
                 } else {
                     if (onGuideChangedListener != null) {
                         onGuideChangedListener.onRemoved(Controller.this);
@@ -148,6 +143,9 @@ public class Controller {
         mParentView.addView(guideLayout, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         currentLayout = guideLayout;
+        if (onPageChangedListener != null) {
+            onPageChangedListener.onPageChanged(current);
+        }
     }
 
     /**
@@ -208,7 +206,7 @@ public class Controller {
      * @param label 引导标示
      */
     public void resetLabel(String label) {
-        sp.edit().putBoolean(label, false).apply();
+        sp.edit().putInt(label, 0).apply();
     }
 
     /**

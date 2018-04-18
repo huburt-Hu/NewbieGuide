@@ -1,9 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.app.hubert.newbieguide.FirstActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/ll_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <Button
+            android:id="@+id/btn_simple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="简单使用" />
+
+        <Button
+            android:id="@+id/btn_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="对话框形式" />
+
+        <Button
+            android:id="@+id/btn_anchor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="anchor" />
+
+        <Button
+            android:id="@+id/btn_listener"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="监听" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_multi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="多页引导页" />
+</LinearLayout>

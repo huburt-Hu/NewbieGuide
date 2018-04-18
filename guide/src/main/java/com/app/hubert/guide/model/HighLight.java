@@ -66,9 +66,6 @@ public class HighLight {
 
     public RectF getRectF(View target) {
         RectF rectF = new RectF();
-        int[] location = new int[2];
-        mHole.getLocationOnScreen(location);
-
         Rect locationInView = ViewUtils.getLocationInView(target, mHole);
         rectF.left = locationInView.left - padding;
         rectF.top = locationInView.top - padding;
