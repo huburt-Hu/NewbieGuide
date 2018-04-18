@@ -135,7 +135,7 @@ NewbieGuide.with(activity)
 
 通过链式调用，一行代码即可实现引导层的显示，来看下效果：
 
-![simple use](https://user-gold-cdn.xitu.io/2018/4/18/162d764b9b1e2e60?w=720&h=613&f=png&s=82773)
+![simple use](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/simple_use.png)
 
 其中：
 
@@ -170,7 +170,7 @@ NewbieGuide.with(activity)
 
 我所采用的方式是将说明内容通过xml的方式，自定义摆放位置。使得说明内容高度自定义，不管你是简单的图片，还是对话框类型的都可以。
 
-![like dialog](https://user-gold-cdn.xitu.io/2018/4/18/162d794ac41b5a15?w=720&h=679&f=png&s=49912)
+![like dialog](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/shape_dialog.png)
 
 ```
 GuidePage.newInstance()
@@ -207,7 +207,7 @@ NewbieGuide.with(FirstActivity.this)
 ```
 这里实现了具体显示引导层。
 
-![anchor](https://user-gold-cdn.xitu.io/2018/4/18/162d7a00a90b95d7?w=720&h=805&f=png&s=76759)
+![anchor](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/anchor.png)
 
 引导层其实是一个FrameLayout，设置anchor之后，引导层的大小就与anchor所占的位置相同。默认是DecorView，即全屏。setLayoutRes方法设置的说明布局则会添加到引导层的FrameLayout中。
 
