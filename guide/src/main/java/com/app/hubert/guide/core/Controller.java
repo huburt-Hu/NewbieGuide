@@ -36,21 +36,20 @@ public class Controller {
 
     private static final String LISTENER_FRAGMENT = "listener_fragment";
 
+    private Activity activity;
     private Fragment fragment;
     private android.support.v4.app.Fragment v4Fragment;
-    private Activity activity;
-
     private OnGuideChangedListener onGuideChangedListener;
     private OnPageChangedListener onPageChangedListener;
     private String label;
     private boolean alwaysShow;
+    private int showCounts;//显示次数
     private List<GuidePage> guidePages;
     private int current;//当前页
     private GuideLayout currentLayout;
-
     private FrameLayout mParentView;
     private SharedPreferences sp;
-
+    private boolean isDefaultParent;//是否是默认的decorView，用于判断是否添加status和navigation高度
     private int topMargin;//statusBar的高度
 
     public Controller(Builder builder) {
@@ -62,8 +61,26 @@ public class Controller {
         this.label = builder.label;
         this.alwaysShow = builder.alwaysShow;
         this.guidePages = builder.guidePages;
+        showCounts = builder.showCounts;
 
-        mParentView = (FrameLayout) activity.getWindow().getDecorView();
+        View anchor = builder.anchor;
+        if (anchor == null) {
+            anchor = activity.getWindow().getDecorView();
+            isDefaultParent = true;
+        }
+        if (anchor instanceof FrameLayout) {
+            mParentView = (FrameLayout) anchor;
+        } else {
+            FrameLayout frameLayout = new FrameLayout(activity);
+            ViewGroup parent = (ViewGroup) anchor.getParent();
+            parent.removeView(anchor);
+            parent.addView(frameLayout, anchor.getLayoutParams());
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams
+                    (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            frameLayout.addView(anchor, lp);
+            mParentView = frameLayout;
+        }
+
         sp = activity.getSharedPreferences(NewbieGuide.TAG, Activity.MODE_PRIVATE);
 
     }
@@ -74,22 +91,23 @@ public class Controller {
      * @return {@link NewbieGuide#SUCCESS} 表示成功显示，{@link NewbieGuide#FAILED} 表示已经显示过，不再显示
      */
     public void show() {
+        final int showed = sp.getInt(label, 0);
         if (!alwaysShow) {
-            boolean showed = sp.getBoolean(label, false);
-            if (showed){
-                return ;
+            if (showed >= showCounts) {
+                return;
             }
         }
         //fix oppo等部分手机无法关闭硬件加速问题
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        mParentView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         mParentView.post(new Runnable() {
             @Override
             public void run() {
                 getTopMargin();
                 if (guidePages == null || guidePages.size() == 0) {
-                    throw new IllegalStateException("there is no guide to show!! Please add alast one Page.");
+                    throw new IllegalStateException("there is no guide to show!! Please add at least one Page.");
                 }
                 current = 0;
                 showGuidePage();
@@ -97,7 +115,7 @@ public class Controller {
                     onGuideChangedListener.onShowed(Controller.this);
                 }
                 addListenerFragment();
-                sp.edit().putBoolean(label, true).apply();
+                sp.edit().putInt(label, showed + 1).apply();
             }
         });
     }
@@ -144,8 +162,10 @@ public class Controller {
             View view = LayoutInflater.from(activity).inflate(layoutResId, guideLayout, false);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.topMargin = topMargin;
-            params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
+            if (isDefaultParent) {
+                params.topMargin = topMargin;
+                params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
+            }
             int[] viewIds = guidePage.getClickToDismissIds();
             if (viewIds != null && viewIds.length > 0) {
                 for (int viewId : viewIds) {
@@ -196,10 +216,20 @@ public class Controller {
      */
     public void remove() {
         if (currentLayout != null && currentLayout.getParent() != null) {
-            ((ViewGroup) currentLayout.getParent()).removeView(currentLayout);
-            if (onGuideChangedListener != null) {
-                onGuideChangedListener.onRemoved(this);
+            ViewGroup parent = (ViewGroup) currentLayout.getParent();
+            parent.removeView(currentLayout);
+            //移除anchor添加的frameLayout
+            if (!(parent instanceof FrameLayout)) {
+                ViewGroup original = (ViewGroup) parent.getParent();
+                View anchor = parent.getChildAt(0);
+                parent.removeAllViews();
+                if (anchor != null) {
+                    original.addView(anchor, parent.getLayoutParams());
+                }
             }
+        }
+        if (onGuideChangedListener != null) {
+            onGuideChangedListener.onRemoved(this);
         }
     }
 

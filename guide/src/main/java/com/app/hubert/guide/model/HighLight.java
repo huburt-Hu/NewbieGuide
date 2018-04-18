@@ -1,9 +1,11 @@
 package com.app.hubert.guide.model;
 
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
 import com.app.hubert.guide.util.LogUtil;
+import com.app.hubert.guide.util.ViewUtils;
 
 /**
  * Created by hubert
@@ -62,14 +64,16 @@ public class HighLight {
         return mHole != null ? Math.max(mHole.getWidth() / 2, mHole.getHeight() / 2) : 0;
     }
 
-    public RectF getRectF() {
+    public RectF getRectF(View target) {
         RectF rectF = new RectF();
         int[] location = new int[2];
         mHole.getLocationOnScreen(location);
-        rectF.left = location[0] - padding;
-        rectF.top = location[1] - padding;
-        rectF.right = location[0] + mHole.getWidth() + padding * 2;
-        rectF.bottom = location[1] + mHole.getHeight() + padding * 2;
+
+        Rect locationInView = ViewUtils.getLocationInView(target, mHole);
+        rectF.left = locationInView.left - padding;
+        rectF.top = locationInView.top - padding;
+        rectF.right = locationInView.right + padding;
+        rectF.bottom = locationInView.bottom + padding;
         LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
         return rectF;
     }

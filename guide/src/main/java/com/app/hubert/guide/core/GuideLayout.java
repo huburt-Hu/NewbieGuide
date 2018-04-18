@@ -79,7 +79,7 @@ public class GuideLayout extends RelativeLayout {
         List<HighLight> highLights = guidePage.getHighLights();
         if (highLights != null) {
             for (HighLight highLight : highLights) {
-                RectF rectF = highLight.getRectF();
+                RectF rectF = highLight.getRectF((View) getParent());
                 switch (highLight.getShape()) {
                     case CIRCLE:
                         canvas.drawCircle(rectF.centerX(), rectF.centerY(), highLight.getRadius(), mPaint);

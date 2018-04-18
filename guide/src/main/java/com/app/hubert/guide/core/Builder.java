@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.Animation;
 
 import com.app.hubert.guide.listener.OnGuideChangedListener;
-import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
-import com.app.hubert.guide.model.HighLight;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +16,12 @@ public class Builder {
     Activity activity;
     Fragment fragment;
     android.support.v4.app.Fragment v4Fragment;
-
     String label;
-    boolean alwaysShow;
+    boolean alwaysShow;//总是显示 default false
+    View anchor;//锚点view
+    int showCounts = 1;//显示次数 default once
     OnGuideChangedListener onGuideChangedListener;
     OnPageChangedListener onPageChangedListener;
-
     List<GuidePage> guidePages = new ArrayList<>();
 
     public Builder(Activity activity) {
@@ -42,7 +39,31 @@ public class Builder {
     }
 
     /**
-     * 是否总是显示引导层
+     * 引导层显示的锚点，即根布局，不设置的话默认是decorView
+     *
+     * @param anchor root
+     */
+    public Builder anchor(View anchor) {
+        this.anchor = anchor;
+        return this;
+    }
+
+    /**
+     * 引导层的显示次数，默认是1次。<br>
+     * 这里的次数是通过sp控制的，是指同一个label在不清除缓存的情况下可以显示的总次数。
+     *
+     * @param count 次数
+     */
+    public Builder setShowCounts(int count) {
+        this.showCounts = count;
+        return this;
+    }
+
+    /**
+     * 是否总是显示引导层，即是否无限次的显示。<br>
+     * 默认为false，如果设置了true，{@link Builder#setShowCounts} 将无效。
+     *
+     * @param b
      */
     public Builder alwaysShow(boolean b) {
         this.alwaysShow = b;
@@ -87,7 +108,7 @@ public class Builder {
      * @return controller
      */
     public Controller build() {
-        checkAndSaveAsPage();
+        check();
         return new Controller(this);
     }
 
@@ -97,13 +118,13 @@ public class Builder {
      * @return controller
      */
     public Controller show() {
-        checkAndSaveAsPage();
+        check();
         Controller controller = new Controller(this);
         controller.show();
         return controller;
     }
 
-    private void checkAndSaveAsPage() {
+    private void check() {
         if (TextUtils.isEmpty(label)) {
             throw new IllegalArgumentException("the param 'label' is missing, please call setLabel()");
         }

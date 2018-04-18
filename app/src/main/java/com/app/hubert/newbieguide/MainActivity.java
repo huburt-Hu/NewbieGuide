@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        View anchor = findViewById(R.id.ll_anchor);
+
         Animation enterAnimation = new AlphaAnimation(0f, 1f);
         enterAnimation.setDuration(600);
         enterAnimation.setFillAfter(true);
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         //新增多页模式，即一个引导层显示多页引导内容
         NewbieGuide.with(this)
                 .setLabel("page")//设置引导层标示区分不同引导层，必传！否则报错
+                .anchor(anchor)
                 .setOnGuideChangedListener(new OnGuideChangedListener() {
                     @Override
                     public void onShowed(Controller controller) {
@@ -74,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
                         //引导页切换，page为当前页位置，从0开始
                     }
                 })
-                .alwaysShow(true)//是否每次都显示引导层，默认false，只显示一次
+                .setShowCounts(9)
+//                .alwaysShow(true)//是否每次都显示引导层，默认false，只显示一次
                 .addGuidePage(//添加一页引导页
                         GuidePage.newInstance()//创建一个实例
                                 .addHighLight(button)//添加高亮的view
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 )
                 .addGuidePage(
                         GuidePage.newInstance()
-                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE,20)
+                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE, 20)
                                 .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
                                 .setEverywhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
                                 .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
