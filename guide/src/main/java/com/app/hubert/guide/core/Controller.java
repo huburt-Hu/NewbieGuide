@@ -51,6 +51,7 @@ public class Controller {
     private SharedPreferences sp;
     private boolean isDefaultParent;//是否是默认的decorView，用于判断是否添加status和navigation高度
     private int topMargin;//statusBar的高度
+    private int indexOfChild = -1;//使用anchor时记录的在父布局的位置
 
     public Controller(Builder builder) {
         this.activity = builder.activity;
@@ -73,8 +74,13 @@ public class Controller {
         } else {
             FrameLayout frameLayout = new FrameLayout(activity);
             ViewGroup parent = (ViewGroup) anchor.getParent();
+            indexOfChild = parent.indexOfChild(anchor);
             parent.removeView(anchor);
-            parent.addView(frameLayout, anchor.getLayoutParams());
+            if (indexOfChild >= 0) {
+                parent.addView(frameLayout, indexOfChild, anchor.getLayoutParams());
+            } else {
+                parent.addView(frameLayout, anchor.getLayoutParams());
+            }
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             frameLayout.addView(anchor, lp);
@@ -222,7 +228,11 @@ public class Controller {
                 View anchor = parent.getChildAt(0);
                 parent.removeAllViews();
                 if (anchor != null) {
-                    original.addView(anchor, parent.getLayoutParams());
+                    if (indexOfChild > 0) {
+                        original.addView(anchor, indexOfChild, parent.getLayoutParams());
+                    } else {
+                        original.addView(anchor, parent.getLayoutParams());
+                    }
                 }
             }
         }
