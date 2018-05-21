@@ -338,6 +338,10 @@ GuidePage.setExitAnimation(exitAnimation)//退出动画
 | remove    |  移除引导层 |
 
 
+## [Q&A](https://github.com/huburt-Hu/NewbieGuide/wiki/Q&A)
+
+
+
 ## 关于我
 
 Github：https://github.com/huburt-Hu
@@ -349,7 +353,7 @@ CSDN：http://blog.csdn.net/Hubert_bing
 掘金：https://juejin.im/user/57bb1fdcc4c971006152d7b0/posts
 
 
-## [Q&A](https://github.com/huburt-Hu/NewbieGuide/wiki/Q&A)
+**本人正在考虑新的工作机会，如果有上海的公司，欢迎内推我，联系邮箱654360340@qq.com或者微信h139x726845**
 
 
 ## License
