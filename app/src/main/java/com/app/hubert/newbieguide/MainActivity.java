@@ -53,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
         View anchor = findViewById(R.id.ll_anchor);
 
-        Animation enterAnimation = new AlphaAnimation(0f, 1f);
-        enterAnimation.setDuration(600);
-        enterAnimation.setFillAfter(true);
-
-        Animation exitAnimation = new AlphaAnimation(1f, 0f);
-        exitAnimation.setDuration(600);
-        exitAnimation.setFillAfter(true);
+//        Animation enterAnimation = new AlphaAnimation(0f, 1f);
+//        enterAnimation.setDuration(600);
+//        enterAnimation.setFillAfter(true);
+//
+//        Animation exitAnimation = new AlphaAnimation(1f, 0f);
+//        exitAnimation.setDuration(600);
+//        exitAnimation.setFillAfter(true);
 
         //新增多页模式，即一个引导层显示多页引导内容
         NewbieGuide.with(this)
@@ -100,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
                                         tv.setText("我是动态设置的文本");
                                     }
                                 })
-                                .setEnterAnimation(enterAnimation)//进入动画
-                                .setExitAnimation(exitAnimation)//退出动画
+//                                .setEnterAnimation(enterAnimation)//进入动画
+//                                .setExitAnimation(exitAnimation)//退出动画
                 )
                 .addGuidePage(
                         GuidePage.newInstance()
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
                                 .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
                                 .setEverywhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
                                 .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
-                                .setEnterAnimation(enterAnimation)//进入动画
-                                .setExitAnimation(exitAnimation)//退出动画
+//                                .setEnterAnimation(enterAnimation)//进入动画
+//                                .setExitAnimation(exitAnimation)//退出动画
                 )
                 .show();//显示引导层(至少需要一页引导页才能显示)
     }

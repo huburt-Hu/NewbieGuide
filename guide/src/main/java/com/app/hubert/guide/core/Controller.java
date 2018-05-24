@@ -103,8 +103,6 @@ public class Controller {
                 return;
             }
         }
-        //fix oppo等部分手机无法关闭硬件加速问题
-        mParentView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         mParentView.post(new Runnable() {
             @Override
