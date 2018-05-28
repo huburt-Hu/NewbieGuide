@@ -101,7 +101,7 @@ NewbieGuide.with(this)
                                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
                                     @Override
-                                    public void onLayoutInflated(View view) {
+                                    public void onLayoutInflated(View view, Controller controller) {
                                         //引导页布局填充后回调，用于初始化
                                         TextView tv = view.findViewById(R.id.textView2);
                                         tv.setText("我是动态设置的文本");
@@ -179,7 +179,7 @@ GuidePage.newInstance()
     .setLayoutRes(R.layout.view_guide_dialog, R.id.btn_ok)
     .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
         @Override
-        public void onLayoutInflated(View view) {
+        public void onLayoutInflated(View view, Controller controller) {
             TextView tv = view.findViewById(R.id.tv_text);
         }
     })
@@ -187,6 +187,25 @@ GuidePage.newInstance()
 
 该方法还有一个可变参数`setLayoutRes(@LayoutRes int resId, int... id)`，传入id数组表示在布局中点击让引导页消失或者进入下一页的View（例如，Button ok的id）。
 `setOnLayoutInflatedListener`设置布局填充完成的监听，当传入的xml(`R.layout.view_guide_dialog`)填充完成时会回答调用该监听，用于初始化自定布局的元素。
+
+
+### 引导页控制（v2.2.0版本新增）
+
+v2.2.0版本Controller新增两个方法用于控制引导页的回退，可以在OnLayoutInflatedListener接口的回调方法中获取到controller对象，执行相应的操作。
+
+```
+.setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+             @Override
+             public void onLayoutInflated(View view, final Controller controller) {
+                        view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                              @Override
+                              public void onClick(View v) {
+                                  controller.showPage(0);
+                              }
+                        });
+             }
+})
+```
 
 ### 背景色
 
@@ -251,7 +270,7 @@ NewbieGuide.with(FirstActivity.this)
         .setLayoutRes(R.layout.view_guide)//设置引导页布局
         .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
             @Override
-            public void onLayoutInflated(View view) {
+            public void onLayoutInflated(View view, Controller controller) {
                 //引导页布局填充后回调，用于初始化
                 TextView tv = view.findViewById(R.id.textView2);
                 tv.setText("我是动态设置的文本");
@@ -312,7 +331,7 @@ GuidePage.setExitAnimation(exitAnimation)//退出动画
 | anchor | 引导层显示的锚点，即根布局，不设置的话默认是decorView（v2.1.0版本添加） |
 | setShowCounts | 引导层的显示次数，默认是1次。（v2.1.0版本添加）|
 
-### GuidePage v1.2.0版本新增
+### GuidePage (v1.2.0版本新增)
 
 引导页对象，包含一张引导页的信息，如高亮的view，布局，跳转控件id，背景色等。
 
@@ -336,6 +355,8 @@ GuidePage.setExitAnimation(exitAnimation)//退出动画
 | show    |  显示引导层的第一页 |
 | resetLabel    |  设置此引导层从没有显示过 |
 | remove    |  移除引导层 |
+| showPreviewPage | 显示前一页page(v2.2.0新增）|
+| showPage(int position) | 显示position位置引导页 (v2.2.0新增) |
 
 
 ## [Q&A](https://github.com/huburt-Hu/NewbieGuide/wiki/Q&A)
