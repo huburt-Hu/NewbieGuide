@@ -25,12 +25,15 @@ import com.app.hubert.guide.util.LogUtil;
 import com.app.hubert.guide.util.ScreenUtils;
 
 import java.lang.reflect.Field;
+import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
  * Created by hubert
  * <p>
  * Created on 2017/7/27.
+ * <p>
+ * guide的控制器，可以通过该类控制引导层的显示与回退，或者重置label
  */
 public class Controller {
 
@@ -123,25 +126,44 @@ public class Controller {
     }
 
     /**
+     * 显示相应position的引导页
+     *
+     * @param position from 0 to (pageSize - 1)
+     */
+    public void showPage(int position) {
+        if (position < 0 || position > guidePages.size() - 1) {
+            throw new InvalidParameterException("The Guide page position is out of range. current:"
+                    + position + ", range: [ 0, " + guidePages.size() + " )");
+        }
+        current = position;
+        currentLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
+            @Override
+            public void onGuideLayoutDismiss(GuideLayout guideLayout) {
+                showGuidePage();
+            }
+        });
+        currentLayout.remove();
+
+    }
+
+    /**
+     * 显示当前引导页的前一页
+     */
+    public void showPreviewPage() {
+        showPage(--current);
+    }
+
+    /**
      * 显示current引导页
      */
     private void showGuidePage() {
         GuidePage page = guidePages.get(current);
-        GuideLayout guideLayout = new GuideLayout(activity);
-        guideLayout.setGuidePage(page);
+        GuideLayout guideLayout = new GuideLayout(activity, page);
         addCustomToLayout(guideLayout, page);
         guideLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
             @Override
             public void onGuideLayoutDismiss(GuideLayout guideLayout) {
-                if (current < guidePages.size() - 1) {
-                    current++;
-                    showGuidePage();
-                } else {
-                    if (onGuideChangedListener != null) {
-                        onGuideChangedListener.onRemoved(Controller.this);
-                    }
-                    removeListenerFragment();
-                }
+                showNextOrRemove();
             }
         });
         mParentView.addView(guideLayout, new FrameLayout.LayoutParams(
@@ -149,6 +171,18 @@ public class Controller {
         currentLayout = guideLayout;
         if (onPageChangedListener != null) {
             onPageChangedListener.onPageChanged(current);
+        }
+    }
+
+    private void showNextOrRemove() {
+        if (current < guidePages.size() - 1) {
+            current++;
+            showGuidePage();
+        } else {
+            if (onGuideChangedListener != null) {
+                onGuideChangedListener.onRemoved(Controller.this);
+            }
+            removeListenerFragment();
         }
     }
 
@@ -186,7 +220,7 @@ public class Controller {
             }
             OnLayoutInflatedListener inflatedListener = guidePage.getOnLayoutInflatedListener();
             if (inflatedListener != null) {
-                inflatedListener.onLayoutInflated(view);
+                inflatedListener.onLayoutInflated(view, this);
             }
             guideLayout.addView(view, params);
         }
@@ -200,6 +234,9 @@ public class Controller {
         LogUtil.i("contentView top:" + topMargin);
     }
 
+    /**
+     * 清楚当前Controller的label记录
+     */
     public void resetLabel() {
         resetLabel(label);
     }

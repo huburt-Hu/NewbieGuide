@@ -45,7 +45,8 @@ public class GridViewActivity extends AppCompatActivity {
                         .alwaysShow(true)
                         .addGuidePage(GuidePage.newInstance()
                                 .addHighLight(childAt, HighLight.Shape.RECTANGLE)
-                                .setLayoutRes(R.layout.view_guide))
+                                .setEverywhereCancelable(false)
+                                .setLayoutRes(R.layout.view_guide, R.id.iv))
                         .show();
             }
         });
@@ -53,17 +54,21 @@ public class GridViewActivity extends AppCompatActivity {
 
     public List<Map<String, Object>> getList() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = null;
 
         String[] titles = new String[]{"本地音乐", "我的最爱", "我的下载", "我的歌单", "最近播放", "我的最爱", "我的下载", "我的歌单", "最近播放"};
         Integer[] images = {R.mipmap.ic_launcher, R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher, R.mipmap.ic_launcher, R.mipmap.ic_launcher};
 
-        for (int i = 0; i < images.length; i++) {
-            map = new HashMap<String, Object>();
-            map.put("image", images[i]);
-            map.put("title", titles[i]);
+        for (int i = 0; i < 50; i++) {
+            int position = i;
+            Map<String, Object> map = new HashMap<String, Object>();
+            int length = images.length - 1;
+            if (position > length) {
+                position = position % length;
+            }
+            map.put("image", images[position]);
+            map.put("title", titles[position]);
             list.add(map);
         }
         return list;

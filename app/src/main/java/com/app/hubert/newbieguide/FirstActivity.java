@@ -2,6 +2,7 @@ package com.app.hubert.newbieguide;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -46,8 +47,9 @@ public class FirstActivity extends AppCompatActivity {
                                 .setEverywhereCancelable(false)//是否点击任意位置消失引导页
                                 .setLayoutRes(R.layout.view_guide_dialog, R.id.btn_ok)
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+
                                     @Override
-                                    public void onLayoutInflated(View view) {
+                                    public void onLayoutInflated(View view, Controller controller) {
                                         TextView tv = view.findViewById(R.id.tv_text);
                                         tv.setText("this like dialog");
                                     }
@@ -100,6 +102,13 @@ public class FirstActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 MainActivity.start(FirstActivity.this);
+            }
+        });
+
+        findViewById(R.id.btn_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GridViewActivity.start(FirstActivity.this);
             }
         });
     }

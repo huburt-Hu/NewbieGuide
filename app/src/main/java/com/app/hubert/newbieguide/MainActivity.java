@@ -53,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
         View anchor = findViewById(R.id.ll_anchor);
 
-//        Animation enterAnimation = new AlphaAnimation(0f, 1f);
-//        enterAnimation.setDuration(600);
-//        enterAnimation.setFillAfter(true);
-//
-//        Animation exitAnimation = new AlphaAnimation(1f, 0f);
-//        exitAnimation.setDuration(600);
-//        exitAnimation.setFillAfter(true);
+        Animation enterAnimation = new AlphaAnimation(0f, 1f);
+        enterAnimation.setDuration(600);
+        enterAnimation.setFillAfter(true);
+
+        Animation exitAnimation = new AlphaAnimation(1f, 0f);
+        exitAnimation.setDuration(600);
+        exitAnimation.setFillAfter(true);
 
         //新增多页模式，即一个引导层显示多页引导内容
         NewbieGuide.with(this)
@@ -93,24 +93,50 @@ public class MainActivity extends AppCompatActivity {
                                 .addHighLight(tvBottom, HighLight.Shape.RECTANGLE)
                                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+
                                     @Override
-                                    public void onLayoutInflated(View view) {
+                                    public void onLayoutInflated(View view, Controller controller) {
                                         //引导页布局填充后回调，用于初始化
                                         TextView tv = view.findViewById(R.id.textView2);
                                         tv.setText("我是动态设置的文本");
                                     }
                                 })
-//                                .setEnterAnimation(enterAnimation)//进入动画
-//                                .setExitAnimation(exitAnimation)//退出动画
+                                .setEnterAnimation(enterAnimation)//进入动画
+                                .setExitAnimation(exitAnimation)//退出动画
                 )
-                .addGuidePage(
-                        GuidePage.newInstance()
-                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE, 20)
-                                .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
-                                .setEverywhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
-                                .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
-//                                .setEnterAnimation(enterAnimation)//进入动画
-//                                .setExitAnimation(exitAnimation)//退出动画
+                .addGuidePage(GuidePage.newInstance()
+                        .addHighLight(tvBottom, HighLight.Shape.RECTANGLE, 20)
+                        .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
+                        .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                            @Override
+                            public void onLayoutInflated(View view, final Controller controller) {
+                                view.findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        controller.showPreviewPage();
+                                    }
+                                });
+                            }
+                        })
+                        .setEverywhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
+                        .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
+                        .setEnterAnimation(enterAnimation)//进入动画
+                        .setExitAnimation(exitAnimation)//退出动画
+                )
+                .addGuidePage(GuidePage.newInstance()
+                        .addHighLight(tvBottom)
+                        .setLayoutRes(R.layout.view_guide_dialog)
+                        .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                            @Override
+                            public void onLayoutInflated(View view, final Controller controller) {
+                                view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        controller.showPage(0);
+                                    }
+                                });
+                            }
+                        })
                 )
                 .show();//显示引导层(至少需要一页引导页才能显示)
     }

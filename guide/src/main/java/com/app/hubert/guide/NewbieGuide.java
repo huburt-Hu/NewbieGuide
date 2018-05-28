@@ -2,6 +2,8 @@ package com.app.hubert.guide;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.app.hubert.guide.core.Builder;
 
@@ -42,5 +44,15 @@ public class NewbieGuide {
         return new Builder(v4Fragment);
     }
 
+    /**
+     * 重置标签的显示次数
+     *
+     * @param context
+     * @param label   标签名
+     */
+    public static void resetLabel(Context context, String label) {
+        SharedPreferences sp = context.getSharedPreferences(NewbieGuide.TAG, Activity.MODE_PRIVATE);
+        sp.edit().putInt(label, 0).apply();
+    }
 }
 

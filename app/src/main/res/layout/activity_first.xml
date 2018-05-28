@@ -42,4 +42,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="多页引导页" />
+
+    <Button
+        android:id="@+id/btn_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="列表" />
 </LinearLayout>

@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -36,17 +37,18 @@ public class GuideLayout extends RelativeLayout {
     public GuidePage guidePage;
     private OnGuideLayoutDismissListener listener;
 
-    public GuideLayout(Context context) {
-        this(context, null);
-    }
-
-    public GuideLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public GuideLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public GuideLayout(Context context, GuidePage page) {
+        super(context);
         init();
+        setGuidePage(page);
+    }
+
+    private GuideLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    private GuideLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     private void init() {
@@ -60,8 +62,6 @@ public class GuideLayout extends RelativeLayout {
         mPaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.INNER));
         //关闭当前view的硬件加速
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-
-        setClickable(true);
 
         //ViewGroup默认设定为true，会使onDraw方法不执行，如果复写了onDraw(Canvas)方法，需要清除此标记
         setWillNotDraw(false);
@@ -108,7 +108,7 @@ public class GuideLayout extends RelativeLayout {
         }
     }
 
-    public void setGuidePage(GuidePage page) {
+    private void setGuidePage(GuidePage page) {
         this.guidePage = page;
         setOnClickListener(new View.OnClickListener() {
             @Override
