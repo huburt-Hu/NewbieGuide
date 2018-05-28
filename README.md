@@ -189,9 +189,9 @@ GuidePage.newInstance()
 `setOnLayoutInflatedListener`设置布局填充完成的监听，当传入的xml(`R.layout.view_guide_dialog`)填充完成时会回答调用该监听，用于初始化自定布局的元素。
 
 
-### 引导页控制（v2.2.0版本新增）
+### 引导页控制（v2.2.1版本新增）
 
-v2.2.0版本Controller新增两个方法用于控制引导页的回退，可以在OnLayoutInflatedListener接口的回调方法中获取到controller对象，执行相应的操作。
+v2.2.1版本Controller新增两个方法用于控制引导页的回退，可以在OnLayoutInflatedListener接口的回调方法中获取到controller对象，执行相应的操作。
 
 ```
 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
@@ -355,8 +355,8 @@ GuidePage.setExitAnimation(exitAnimation)//退出动画
 | show    |  显示引导层的第一页 |
 | resetLabel    |  设置此引导层从没有显示过 |
 | remove    |  移除引导层 |
-| showPreviewPage | 显示前一页page(v2.2.0新增）|
-| showPage(int position) | 显示position位置引导页 (v2.2.0新增) |
+| showPreviewPage | 显示前一页page(v2.2.1新增）|
+| showPage(int position) | 显示position位置引导页 (v2.2.1新增) |
 
 
 ## [Q&A](https://github.com/huburt-Hu/NewbieGuide/wiki/Q&A)
