@@ -68,7 +68,7 @@ public class FirstActivity extends AppCompatActivity {
                         .anchor(anchorView)
                         .alwaysShow(true)//总是显示，调试时可以打开
                         .addGuidePage(GuidePage.newInstance()
-                                .addHighLight(btnAnchor, HighLight.Shape.CIRCLE, 5)
+                                .addHighLight(btnAnchor, HighLight.Shape.CIRCLE, 25)
                                 .setLayoutRes(R.layout.view_guide_anchor))
                         .show();
             }

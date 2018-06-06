@@ -61,7 +61,10 @@ public class HighLight {
     }
 
     public int getRadius() {
-        return mHole != null ? Math.max(mHole.getWidth() / 2, mHole.getHeight() / 2) : 0;
+        if (mHole == null) {
+            throw new IllegalArgumentException("the hight light view is null!");
+        }
+        return Math.max(mHole.getWidth() / 2, mHole.getHeight() / 2) + padding;
     }
 
     public RectF getRectF(View target) {
