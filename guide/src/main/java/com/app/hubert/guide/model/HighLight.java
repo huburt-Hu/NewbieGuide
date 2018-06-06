@@ -1,82 +1,20 @@
 package com.app.hubert.guide.model;
 
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
-import com.app.hubert.guide.util.LogUtil;
-import com.app.hubert.guide.util.ViewUtils;
-
 /**
- * Created by hubert
- * <p>
- * Created on 2017/7/27.
+ * Created by hubert on 2018/6/6.
  */
-public class HighLight {
+public interface HighLight {
 
-    private View mHole;
-    private Shape shape = Shape.RECTANGLE;
-    /**
-     * 圆角，仅当shape = Shape.ROUND_RECTANGLE才生效
-     */
-    private int round;
-    /**
-     * 高亮相对view的padding
-     */
-    private int padding;
+    Shape getShape();
 
-    public static HighLight newInstance(View view) {
-        return new HighLight(view);
-    }
+    RectF getRectF(View view);
 
-    private HighLight(View hole) {
-        this.mHole = hole;
-    }
+    float getRadius();
 
-    public HighLight setShape(Shape shape) {
-        this.shape = shape;
-        return this;
-    }
-
-    public HighLight setRound(int round) {
-        this.round = round;
-        return this;
-    }
-
-    public HighLight setPadding(int padding) {
-        this.padding = padding;
-        return this;
-    }
-
-    public int getPadding() {
-        return padding;
-    }
-
-    public Shape getShape() {
-        return shape;
-    }
-
-    public int getRound() {
-        return round;
-    }
-
-    public int getRadius() {
-        if (mHole == null) {
-            throw new IllegalArgumentException("the hight light view is null!");
-        }
-        return Math.max(mHole.getWidth() / 2, mHole.getHeight() / 2) + padding;
-    }
-
-    public RectF getRectF(View target) {
-        RectF rectF = new RectF();
-        Rect locationInView = ViewUtils.getLocationInView(target, mHole);
-        rectF.left = locationInView.left - padding;
-        rectF.top = locationInView.top - padding;
-        rectF.right = locationInView.right + padding;
-        rectF.bottom = locationInView.bottom + padding;
-        LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
-        return rectF;
-    }
+    int getRound();
 
     public enum Shape {
         CIRCLE,//圆形
@@ -84,5 +22,4 @@ public class HighLight {
         OVAL,//椭圆
         ROUND_RECTANGLE;//圆角矩形
     }
-
 }

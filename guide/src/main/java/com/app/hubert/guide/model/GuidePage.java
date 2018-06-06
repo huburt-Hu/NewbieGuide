@@ -1,5 +1,6 @@
 package com.app.hubert.guide.model;
 
+import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.view.View;
@@ -47,16 +48,37 @@ public class GuidePage {
      * 添加需要高亮的view
      *
      * @param view    需要高亮的view
-     * @param shape   高亮类型：圆形，椭圆，矩形，圆角矩形
-     * @param round   圆角尺寸，单位dp
+     * @param shape   高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round   圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
      * @param padding 高亮相对view的padding,单位px
      */
     public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding) {
         highLights.add(
-                HighLight.newInstance(view)
+                HightlightView.newInstance(view)
                         .setShape(shape)
                         .setRound(round)
                         .setPadding(padding));
+        return this;
+    }
+
+    public GuidePage addHighLight(RectF rectF) {
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0);
+    }
+
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape) {
+        return addHighLight(rectF, shape, 0);
+    }
+
+    /**
+     * 添加高亮区域
+     *
+     * @param rectF 高亮区域，相对与anchor view（默认是decorView）
+     * @param shape 高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round 圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @return
+     */
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round) {
+        highLights.add(new HightlightRectF(rectF, shape, round));
         return this;
     }
 

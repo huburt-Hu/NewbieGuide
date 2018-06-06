@@ -1,8 +1,8 @@
 package com.app.hubert.newbieguide;
 
+import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,6 +31,7 @@ public class FirstActivity extends AppCompatActivity {
                         .alwaysShow(true)//总是显示，调试时可以打开
                         .addGuidePage(GuidePage.newInstance()
                                 .addHighLight(btnSimple)
+                                .addHighLight(new RectF(0, 800, 200, 1200))
                                 .setLayoutRes(R.layout.view_guide_simple))
                         .show();
             }

@@ -19,7 +19,6 @@ import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
-import com.jaeger.library.StatusBarUtil;
 
 public class MainActivity extends AppCompatActivity {
 
