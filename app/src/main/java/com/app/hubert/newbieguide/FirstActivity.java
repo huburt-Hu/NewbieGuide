@@ -14,6 +14,7 @@ import com.app.hubert.guide.listener.OnGuideChangedListener;
 import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.util.ViewUtils;
 
 public class FirstActivity extends AppCompatActivity {
 
@@ -109,7 +110,7 @@ public class FirstActivity extends AppCompatActivity {
         findViewById(R.id.btn_list).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GridViewActivity.start(FirstActivity.this);
+                RecyclerViewActivity.start(FirstActivity.this);
             }
         });
     }

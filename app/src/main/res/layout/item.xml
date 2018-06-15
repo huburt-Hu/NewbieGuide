@@ -7,6 +7,8 @@
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:layout_height="50dp"
         android:text="item" />
 </LinearLayout>

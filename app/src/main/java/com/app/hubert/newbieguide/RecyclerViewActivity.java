@@ -6,9 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.app.hubert.guide.NewbieGuide;
+import com.app.hubert.guide.core.Controller;
+import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -24,21 +29,49 @@ import java.util.List;
 
 public class RecyclerViewActivity extends AppCompatActivity {
 
+    private LinearLayoutManager layoutManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recylerview);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         ArrayList<String> data = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             data.add("item " + i);
         }
         recyclerView.setAdapter(new Adapter(data));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                recyclerView.getLayoutManager()
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                    int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                    int targetPosition = 20;
+                    if (firstVisibleItemPosition <= targetPosition
+                            && targetPosition < lastVisibleItemPosition) {//指定位置滚动到屏幕中
+                        NewbieGuide.with(RecyclerViewActivity.this)
+                                .setLabel("grid_view_guide")
+                                .alwaysShow(true)
+                                .addGuidePage(GuidePage.newInstance()
+                                        //注意获取position位置view的方法，不要使用getChildAt
+                                        .addHighLight(layoutManager.findViewByPosition(targetPosition))
+                                        .setLayoutRes(R.layout.view_guide_rv1)
+                                        .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                                            @Override
+                                            public void onLayoutInflated(View view, Controller controller) {
+                                                TextView tv = view.findViewById(R.id.tv);
+                                                tv.setText("滚动后才能可见的item这样使用");
+                                            }
+                                        })
+                                )
+                                .show();
+                    }
+                }
             }
         });
 
@@ -49,9 +82,17 @@ public class RecyclerViewActivity extends AppCompatActivity {
                         .setLabel("grid_view_guide")
                         .alwaysShow(true)
                         .addGuidePage(GuidePage.newInstance()
+                                //getChildAt获取的是屏幕中可见的第一个，并不是数据中的position
                                 .addHighLight(recyclerView.getChildAt(0))
-                                .setEverywhereCancelable(false)
-                                .setLayoutRes(R.layout.view_guide_anchor))
+                                .setLayoutRes(R.layout.view_guide_rv1)
+                                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                                    @Override
+                                    public void onLayoutInflated(View view, Controller controller) {
+                                        TextView tv = view.findViewById(R.id.tv);
+                                        tv.setText("第一页可见的item这样使用");
+                                    }
+                                })
+                        )
                         .show();
             }
         });

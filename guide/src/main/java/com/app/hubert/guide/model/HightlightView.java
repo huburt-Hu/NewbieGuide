@@ -73,6 +73,9 @@ public class HightlightView implements HighLight {
 
     @Override
     public RectF getRectF(View target) {
+        if (mHole == null) {
+            throw new IllegalArgumentException("the hight light view is null!");
+        }
         RectF rectF = new RectF();
         Rect locationInView = ViewUtils.getLocationInView(target, mHole);
         rectF.left = locationInView.left - padding;

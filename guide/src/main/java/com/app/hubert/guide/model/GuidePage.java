@@ -75,7 +75,6 @@ public class GuidePage {
      * @param rectF 高亮区域，相对与anchor view（默认是decorView）
      * @param shape 高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
      * @param round 圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
-     * @return
      */
     public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round) {
         highLights.add(new HightlightRectF(rectF, shape, round));

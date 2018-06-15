@@ -30,7 +30,7 @@ public class HightlightRectF implements HighLight {
 
     @Override
     public float getRadius() {
-        return Math.max(rectF.width() / 2, rectF.height() / 2);
+        return Math.min(rectF.width() / 2, rectF.height() / 2);
     }
 
     @Override
