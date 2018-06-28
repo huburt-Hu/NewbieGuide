@@ -8,14 +8,20 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.app.hubert.guide.NewbieGuide;
 import com.app.hubert.guide.listener.AnimationListenerAdapter;
+import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.model.RelativeGuide;
 
 import java.util.List;
 
@@ -24,18 +30,20 @@ import java.util.List;
  * <p>
  * Created on 2017/7/27.
  */
-public class GuideLayout extends RelativeLayout {
+public class GuideLayout extends FrameLayout {
 
     public static final int DEFAULT_BACKGROUND_COLOR = 0xb2000000;
 
+    private Controller controller;
     private Paint mPaint;
     public GuidePage guidePage;
     private OnGuideLayoutDismissListener listener;
 
-    public GuideLayout(Context context, GuidePage page) {
+    public GuideLayout(Context context, GuidePage page, Controller controller) {
         super(context);
         init();
         setGuidePage(page);
+        this.controller = controller;
     }
 
     private GuideLayout(Context context, AttributeSet attrs) {
@@ -74,7 +82,7 @@ public class GuideLayout extends RelativeLayout {
         List<HighLight> highLights = guidePage.getHighLights();
         if (highLights != null) {
             for (HighLight highLight : highLights) {
-                RectF rectF = highLight.getRectF((View) getParent());
+                RectF rectF = highLight.getRectF((ViewGroup) getParent());
                 switch (highLight.getShape()) {
                     case CIRCLE:
                         canvas.drawCircle(rectF.centerX(), rectF.centerY(), highLight.getRadius(), mPaint);
@@ -97,6 +105,7 @@ public class GuideLayout extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        addCustomToLayout(guidePage);
         Animation enterAnimation = guidePage.getEnterAnimation();
         if (enterAnimation != null) {
             startAnimation(enterAnimation);
@@ -113,6 +122,48 @@ public class GuideLayout extends RelativeLayout {
                 }
             }
         });
+    }
+
+    /**
+     * 将自定义布局填充到guideLayout中
+     *
+     * @param guideLayout
+     */
+    private void addCustomToLayout(GuidePage guidePage) {
+        removeAllViews();
+        int layoutResId = guidePage.getLayoutResId();
+        if (layoutResId != 0) {
+            View view = LayoutInflater.from(getContext()).inflate(layoutResId, this, false);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            int[] viewIds = guidePage.getClickToDismissIds();
+            if (viewIds != null && viewIds.length > 0) {
+                for (int viewId : viewIds) {
+                    View click = view.findViewById(viewId);
+                    if (click != null) {
+                        click.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                remove();
+                            }
+                        });
+                    } else {
+                        Log.w(NewbieGuide.TAG, "can't find the view by id : " + viewId + " which used to remove guide page");
+                    }
+                }
+            }
+            OnLayoutInflatedListener inflatedListener = guidePage.getOnLayoutInflatedListener();
+            if (inflatedListener != null) {
+                inflatedListener.onLayoutInflated(view, controller);
+            }
+            addView(view, params);
+        }
+        List<RelativeGuide> relativeGuides = guidePage.getRelativeGuides();
+        if (relativeGuides.size() > 0) {
+            for (RelativeGuide relativeGuide : relativeGuides) {
+                addView(relativeGuide.getGuideLayout((ViewGroup) getParent()));
+            }
+        }
     }
 
     public void setOnGuideLayoutDismissListener(OnGuideLayoutDismissListener listener) {

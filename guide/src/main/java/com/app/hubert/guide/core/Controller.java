@@ -21,6 +21,7 @@ import com.app.hubert.guide.listener.OnGuideChangedListener;
 import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
+import com.app.hubert.guide.model.RelativeGuide;
 import com.app.hubert.guide.util.LogUtil;
 import com.app.hubert.guide.util.ScreenUtils;
 
@@ -52,8 +53,6 @@ public class Controller {
     private GuideLayout currentLayout;
     private FrameLayout mParentView;
     private SharedPreferences sp;
-    private boolean isDefaultParent;//是否是默认的decorView，用于判断是否添加status和navigation高度
-    private int topMargin;//statusBar的高度
     private int indexOfChild = -1;//使用anchor时记录的在父布局的位置
 
     public Controller(Builder builder) {
@@ -69,8 +68,7 @@ public class Controller {
 
         View anchor = builder.anchor;
         if (anchor == null) {
-            anchor = activity.getWindow().getDecorView();
-            isDefaultParent = true;
+            anchor = activity.findViewById(android.R.id.content);
         }
         if (anchor instanceof FrameLayout) {
             mParentView = (FrameLayout) anchor;
@@ -110,7 +108,6 @@ public class Controller {
         mParentView.post(new Runnable() {
             @Override
             public void run() {
-                getTopMargin();
                 if (guidePages == null || guidePages.size() == 0) {
                     throw new IllegalStateException("there is no guide to show!! Please add at least one Page.");
                 }
@@ -135,6 +132,9 @@ public class Controller {
             throw new InvalidParameterException("The Guide page position is out of range. current:"
                     + position + ", range: [ 0, " + guidePages.size() + " )");
         }
+        if (current == position) {
+            return;
+        }
         current = position;
         currentLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
             @Override
@@ -158,8 +158,7 @@ public class Controller {
      */
     private void showGuidePage() {
         GuidePage page = guidePages.get(current);
-        GuideLayout guideLayout = new GuideLayout(activity, page);
-        addCustomToLayout(guideLayout, page);
+        GuideLayout guideLayout = new GuideLayout(activity, page, this);
         guideLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
             @Override
             public void onGuideLayoutDismiss(GuideLayout guideLayout) {
@@ -184,54 +183,6 @@ public class Controller {
             }
             removeListenerFragment();
         }
-    }
-
-    /**
-     * 将自定义布局填充到guideLayout中
-     *
-     * @param guideLayout
-     */
-    private void addCustomToLayout(final GuideLayout guideLayout, GuidePage guidePage) {
-        guideLayout.removeAllViews();
-        int layoutResId = guidePage.getLayoutResId();
-        if (layoutResId != 0) {
-            View view = LayoutInflater.from(activity).inflate(layoutResId, guideLayout, false);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            if (isDefaultParent) {
-                params.topMargin = topMargin;
-                params.bottomMargin = ScreenUtils.getNavigationBarHeight(activity);
-            }
-            int[] viewIds = guidePage.getClickToDismissIds();
-            if (viewIds != null && viewIds.length > 0) {
-                for (int viewId : viewIds) {
-                    View click = view.findViewById(viewId);
-                    if (click != null) {
-                        click.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                guideLayout.remove();
-                            }
-                        });
-                    } else {
-                        Log.w(NewbieGuide.TAG, "can't find the view by id : " + viewId + " which used to remove guide page");
-                    }
-                }
-            }
-            OnLayoutInflatedListener inflatedListener = guidePage.getOnLayoutInflatedListener();
-            if (inflatedListener != null) {
-                inflatedListener.onLayoutInflated(view, this);
-            }
-            guideLayout.addView(view, params);
-        }
-    }
-
-    private void getTopMargin() {
-        final View contentView = activity.findViewById(android.R.id.content);
-        int[] location = new int[2];
-        contentView.getLocationOnScreen(location);
-        topMargin = location[1];
-        LogUtil.i("contentView top:" + topMargin);
     }
 
     /**

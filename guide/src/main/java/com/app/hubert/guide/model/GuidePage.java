@@ -3,6 +3,7 @@ package com.app.hubert.guide.model;
 import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.animation.Animation;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class GuidePage {
 
     private List<HighLight> highLights = new ArrayList<>();
+    private List<RelativeGuide> relativeGuides = new ArrayList<>();
     private boolean everywhereCancelable = true;
     private int backgroundColor;
     private int layoutResId;
@@ -33,31 +35,48 @@ public class GuidePage {
     }
 
     public GuidePage addHighLight(View view) {
-        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0);
+        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, null);
+    }
+
+    public GuidePage addHighLight(View view, RelativeGuide relativeGuide) {
+        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, relativeGuide);
     }
 
     public GuidePage addHighLight(View view, HighLight.Shape shape) {
-        return addHighLight(view, shape, 0, 0);
+        return addHighLight(view, shape, 0, 0, null);
+    }
+
+    public GuidePage addHighLight(View view, HighLight.Shape shape, RelativeGuide relativeGuide) {
+        return addHighLight(view, shape, 0, 0, relativeGuide);
     }
 
     public GuidePage addHighLight(View view, HighLight.Shape shape, int padding) {
-        return addHighLight(view, shape, 0, padding);
+        return addHighLight(view, shape, 0, padding, null);
+    }
+
+    public GuidePage addHighLight(View view, HighLight.Shape shape, int padding, RelativeGuide relativeGuide) {
+        return addHighLight(view, shape, 0, padding, relativeGuide);
     }
 
     /**
      * 添加需要高亮的view
      *
-     * @param view    需要高亮的view
-     * @param shape   高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
-     * @param round   圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
-     * @param padding 高亮相对view的padding,单位px
+     * @param view          需要高亮的view
+     * @param shape         高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round         圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param padding       高亮相对view的padding,单位px
+     * @param relativeGuide 相对于高亮的引导布局
      */
-    public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding) {
-        highLights.add(
-                HightlightView.newInstance(view)
-                        .setShape(shape)
-                        .setRound(round)
-                        .setPadding(padding));
+    public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding, @Nullable RelativeGuide relativeGuide) {
+        HighLight highLight = HightlightView.newInstance(view)
+                .setShape(shape)
+                .setRound(round)
+                .setPadding(padding);
+        highLights.add(highLight);
+        if (relativeGuide != null) {
+            relativeGuide.highLight = highLight;
+            relativeGuides.add(relativeGuide);
+        }
         return this;
     }
 
@@ -147,7 +166,8 @@ public class GuidePage {
     }
 
     public boolean isEmpty() {
-        return layoutResId == 0 && highLights.size() == 0;
+        return layoutResId == 0 && highLights.size() == 0
+                && relativeGuides.size() == 0;
     }
 
     public List<HighLight> getHighLights() {
@@ -176,5 +196,9 @@ public class GuidePage {
 
     public Animation getExitAnimation() {
         return exitAnimation;
+    }
+
+    public List<RelativeGuide> getRelativeGuides() {
+        return relativeGuides;
     }
 }

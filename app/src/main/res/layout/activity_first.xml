@@ -38,6 +38,13 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btn_rect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="指定RectF高亮"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_multi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,4 +55,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="列表" />
+
+    <Button
+        android:id="@+id/btn_relative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:text="相对位置展示引导布局" />
 </LinearLayout>

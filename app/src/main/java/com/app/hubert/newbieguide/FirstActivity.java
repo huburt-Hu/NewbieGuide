@@ -3,6 +3,7 @@ package com.app.hubert.newbieguide;
 import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.app.hubert.guide.listener.OnGuideChangedListener;
 import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.model.RelativeGuide;
 import com.app.hubert.guide.util.ViewUtils;
 
 public class FirstActivity extends AppCompatActivity {
@@ -111,6 +113,35 @@ public class FirstActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RecyclerViewActivity.start(FirstActivity.this);
+            }
+        });
+
+        final View btnRelative = findViewById(R.id.btn_relative);
+        btnRelative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewbieGuide.with(FirstActivity.this)
+                        .setLabel("relative")
+                        .alwaysShow(true)//总是显示，调试时可以打开
+                        .addGuidePage(
+                                GuidePage.newInstance()
+                                        .addHighLight(btnRelative, new RelativeGuide(R.layout.view_relative_guide, Gravity.RIGHT))
+                                        .setLayoutRes(R.layout.view_guide_simple)
+                        )
+                        .show();
+            }
+        });
+
+        findViewById(R.id.btn_rect).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewbieGuide.with(FirstActivity.this)
+                        .setLabel("rect")
+                        .alwaysShow(true)//总是显示，调试时可以打开
+                        .addGuidePage(GuidePage.newInstance()
+                                .addHighLight(new RectF(0, 800, 500, 1000))
+                        )
+                        .show();
             }
         });
     }
