@@ -68,43 +68,63 @@ public class GuidePage {
      * @param relativeGuide 相对于高亮的引导布局
      */
     public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding, @Nullable RelativeGuide relativeGuide) {
-        HighLight highLight = HightlightView.newInstance(view)
+        HighLight highlight = HighlightView.newInstance(view)
                 .setShape(shape)
                 .setRound(round)
                 .setPadding(padding);
-        highLights.add(highLight);
+        highLights.add(highlight);
         if (relativeGuide != null) {
-            relativeGuide.highLight = highLight;
+            relativeGuide.highLight = highlight;
             relativeGuides.add(relativeGuide);
         }
         return this;
     }
 
     public GuidePage addHighLight(RectF rectF) {
-        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0);
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, null);
+    }
+
+    public GuidePage addHighLight(RectF rectF, RelativeGuide relativeGuide) {
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, relativeGuide);
     }
 
     public GuidePage addHighLight(RectF rectF, HighLight.Shape shape) {
-        return addHighLight(rectF, shape, 0);
+        return addHighLight(rectF, shape, 0, null);
+    }
+
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, RelativeGuide relativeGuide) {
+        return addHighLight(rectF, shape, 0, relativeGuide);
+    }
+
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round) {
+        return addHighLight(rectF, shape, round, null);
     }
 
     /**
      * 添加高亮区域
      *
-     * @param rectF 高亮区域，相对与anchor view（默认是decorView）
-     * @param shape 高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
-     * @param round 圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param rectF         高亮区域，相对与anchor view（默认是decorView）
+     * @param shape         高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round         圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param relativeGuide 相对于高亮的引导布局
      */
-    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round) {
-        highLights.add(new HightlightRectF(rectF, shape, round));
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round, @Nullable RelativeGuide relativeGuide) {
+        HighlightRectF highlight = new HighlightRectF(rectF, shape, round);
+        highLights.add(highlight);
+        if (relativeGuide != null) {
+            relativeGuide.highLight = highlight;
+            relativeGuides.add(relativeGuide);
+        }
         return this;
     }
 
+    @Deprecated
     public GuidePage addHighLight(HighLight... highLights) {
         this.highLights.addAll(Arrays.asList(highLights));
         return this;
     }
 
+    @Deprecated
     public GuidePage addHighLight(List<HighLight> list) {
         highLights.addAll(list);
         return this;

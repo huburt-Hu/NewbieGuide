@@ -6,13 +6,13 @@ import android.view.View;
 /**
  * Created by hubert on 2018/6/6.
  */
-public class HightlightRectF implements HighLight {
+public class HighlightRectF implements HighLight {
 
     private RectF rectF;
     private Shape shape;
     private int round;
 
-    public HightlightRectF(RectF rectF, Shape shape, int round) {
+    public HighlightRectF(RectF rectF, Shape shape, int round) {
         this.rectF = rectF;
         this.shape = shape;
         this.round = round;

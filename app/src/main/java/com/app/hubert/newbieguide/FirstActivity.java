@@ -1,6 +1,7 @@
 package com.app.hubert.newbieguide;
 
 import android.graphics.RectF;
+import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,6 +18,9 @@ import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
 import com.app.hubert.guide.model.RelativeGuide;
 import com.app.hubert.guide.util.ViewUtils;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public class FirstActivity extends AppCompatActivity {
 
@@ -125,8 +129,8 @@ public class FirstActivity extends AppCompatActivity {
                         .alwaysShow(true)//总是显示，调试时可以打开
                         .addGuidePage(
                                 GuidePage.newInstance()
-                                        .addHighLight(btnRelative, new RelativeGuide(R.layout.view_relative_guide, Gravity.RIGHT))
-                                        .setLayoutRes(R.layout.view_guide_simple)
+                                        .addHighLight(btnRelative,
+                                                new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100))
                         )
                         .show();
             }

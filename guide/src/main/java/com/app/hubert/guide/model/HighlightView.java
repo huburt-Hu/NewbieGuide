@@ -6,14 +6,13 @@ import android.view.View;
 
 import com.app.hubert.guide.util.LogUtil;
 import com.app.hubert.guide.util.ViewUtils;
-import com.app.hubert.guide.model.HighLight.Shape;
 
 /**
  * Created by hubert
  * <p>
  * Created on 2017/7/27.
  */
-public class HightlightView implements HighLight {
+public class HighlightView implements HighLight {
 
     private View mHole;
     private Shape shape = Shape.RECTANGLE;
@@ -26,25 +25,25 @@ public class HightlightView implements HighLight {
      */
     private int padding;
 
-    public static HightlightView newInstance(View view) {
-        return new HightlightView(view);
+    public static HighlightView newInstance(View view) {
+        return new HighlightView(view);
     }
 
-    private HightlightView(View hole) {
+    private HighlightView(View hole) {
         this.mHole = hole;
     }
 
-    public HightlightView setShape(Shape shape) {
+    public HighlightView setShape(Shape shape) {
         this.shape = shape;
         return this;
     }
 
-    public HightlightView setRound(int round) {
+    public HighlightView setRound(int round) {
         this.round = round;
         return this;
     }
 
-    public HightlightView setPadding(int padding) {
+    public HighlightView setPadding(int padding) {
         this.padding = padding;
         return this;
     }

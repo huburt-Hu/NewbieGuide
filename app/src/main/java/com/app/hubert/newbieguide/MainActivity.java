@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.model.RelativeGuide;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,7 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 .addGuidePage(//添加一页引导页
                         GuidePage.newInstance()//创建一个实例
                                 .addHighLight(button)//添加高亮的view
-                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE)
+                                .addHighLight(tvBottom,
+                                        new RelativeGuide(R.layout.view_relative_guide, Gravity.TOP, 100) {
+                                            @Override
+                                            protected void offsetMargin(MarginInfo marginInfo, ViewGroup viewGroup, View view) {
+                                                marginInfo.leftMargin += 100;
+                                            }
+                                        })
                                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
 

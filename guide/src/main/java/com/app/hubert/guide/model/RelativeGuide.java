@@ -11,6 +11,9 @@ import android.widget.FrameLayout;
 
 import com.app.hubert.guide.util.LogUtil;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Created by hubert on 2018/6/28.
  */
@@ -18,16 +21,17 @@ public class RelativeGuide {
 
     @IntDef({android.view.Gravity.LEFT, android.view.Gravity.TOP,
             android.view.Gravity.RIGHT, android.view.Gravity.BOTTOM})
-    public @interface Gravity {
+    @Retention(RetentionPolicy.SOURCE)
+    @interface LimitGravity {
 
     }
 
     public static class MarginInfo {
-        int leftMargin;
-        int topMargin;
-        int rightMargin;
-        int bottomMargin;
-        int gravity;
+        public int leftMargin;
+        public int topMargin;
+        public int rightMargin;
+        public int bottomMargin;
+        public int gravity;
 
         @Override
         public String toString() {
@@ -45,15 +49,20 @@ public class RelativeGuide {
     @LayoutRes
     public int layout;
     public int padding;
-    @Gravity
     public int gravity;
 
-    public RelativeGuide(@LayoutRes int layout, @Gravity int gravity) {
+    public RelativeGuide(@LayoutRes int layout, @LimitGravity int gravity) {
         this.layout = layout;
         this.gravity = gravity;
     }
 
-    public RelativeGuide(@LayoutRes int layout, @Gravity int gravity, int padding) {
+    /**
+     *
+     * @param layout 相对位置引导布局
+     * @param gravity 仅限left top right bottom
+     * @param padding 与高亮view的padding，单位px
+     */
+    public RelativeGuide(@LayoutRes int layout, @LimitGravity int gravity, int padding) {
         this.layout = layout;
         this.gravity = gravity;
         this.padding = padding;
@@ -74,25 +83,25 @@ public class RelativeGuide {
         return view;
     }
 
-    private MarginInfo getMarginInfo(@Gravity int gravity, ViewGroup viewGroup, View view) {
+    private MarginInfo getMarginInfo(@LimitGravity int gravity, ViewGroup viewGroup, View view) {
         MarginInfo marginInfo = new MarginInfo();
         RectF rectF = highLight.getRectF(viewGroup);
         switch (gravity) {
-            case android.view.Gravity.LEFT:
-                marginInfo.gravity = android.view.Gravity.RIGHT;
-                marginInfo.rightMargin = (int) (viewGroup.getWidth() - rectF.left - padding);
+            case Gravity.LEFT:
+                marginInfo.gravity = Gravity.RIGHT;
+                marginInfo.rightMargin = (int) (viewGroup.getWidth() - rectF.left + padding);
                 marginInfo.topMargin = (int) rectF.top;
                 break;
-            case android.view.Gravity.TOP:
-                marginInfo.gravity = android.view.Gravity.BOTTOM;
-                marginInfo.bottomMargin = (int) (viewGroup.getHeight() - rectF.top - padding);
+            case Gravity.TOP:
+                marginInfo.gravity = Gravity.BOTTOM;
+                marginInfo.bottomMargin = (int) (viewGroup.getHeight() - rectF.top + padding);
                 marginInfo.leftMargin = (int) rectF.left;
                 break;
-            case android.view.Gravity.RIGHT:
+            case Gravity.RIGHT:
                 marginInfo.leftMargin = (int) (rectF.right + padding);
                 marginInfo.topMargin = (int) rectF.top;
                 break;
-            case android.view.Gravity.BOTTOM:
+            case Gravity.BOTTOM:
                 marginInfo.topMargin = (int) (rectF.bottom + padding);
                 marginInfo.leftMargin = (int) rectF.left;
                 break;
@@ -103,5 +112,4 @@ public class RelativeGuide {
     protected void offsetMargin(MarginInfo marginInfo, ViewGroup viewGroup, View view) {
         //do nothing
     }
-
 }

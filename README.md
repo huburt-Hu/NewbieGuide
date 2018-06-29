@@ -145,6 +145,44 @@ NewbieGuide.with(activity)
 + `GuidePage`即为引导页对象，表示一页引导页，可以通过`.newInstance()`创建对象。并通过`addHighLight`添加一个或多个需要高亮的view，该方法有多个重载，可以设置高亮的形状，以及padding等（默认是矩形）。`setLayoutRes`方法用于引导页说明布局，就是上图的说明文字的布局。
 + `show`方法直接显示引导层，如果不想马上显示可以使用`build`方法返回一个Controller对象，完成构建。需要显示得时候再次调用Controller对象的show方法进行显示。
 
+### 添加高亮
+
+#### 高亮view
+
+addHighLight方法有多个重写，完整参数如下：
+
+```
+    /**
+     * 添加需要高亮的view
+     *
+     * @param view          需要高亮的view
+     * @param shape         高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round         圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param padding       高亮相对view的padding,单位px
+     * @param relativeGuide 相对于高亮的引导布局
+     */
+    public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding, @Nullable RelativeGuide relativeGuide)
+
+```
+#### 高亮区域（v2.3.0新增）
+
+有些情况可能不太容易获得高亮view的引用，那么此时可以用添加高亮区域的方式来代替，
+计算出需要高亮的view在anchor中位置，将获得的rectF传入addHighLight方法
+
+```
+    /**
+     * 添加高亮区域
+     *
+     * @param rectF         高亮区域，相对于anchor view（默认是android.R.id.content）
+     * @param shape         高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round         圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param relativeGuide 相对于高亮的引导布局
+     */
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round, @Nullable RelativeGuide relativeGuide)
+```
+
+
+
 
 ### 显示次数控制
 
@@ -164,7 +202,7 @@ NewbieGuide.with(activity)
 就算设置了`.alwaysShow(true)`，内部还是会记录显示得次数，之后改会`setShowCounts(3)`可能实际记录的次数早已超过限制，因此不会再次显示。使用Controller对象的`resetLabel`方法重置次数。（或者清除应用缓存也能重置次数）
 
 
-### 自定义说明布局
+### 引导布局
 
 着重说明一下setLayoutRes方法，通常其他的类似的库都是通过代码参数来控制说明内容展示在高亮view相对的位置，如下方。经常需要多次运行才能找到满意的位置的参数。大多说明内容只能出现在高亮的上下左右，需要库的支持，自定义的程度不是很高。
 
@@ -187,6 +225,34 @@ GuidePage.newInstance()
 
 该方法还有一个可变参数`setLayoutRes(@LayoutRes int resId, int... id)`，传入id数组表示在布局中点击让引导页消失或者进入下一页的View（例如，Button ok的id）。
 `setOnLayoutInflatedListener`设置布局填充完成的监听，当传入的xml(`R.layout.view_guide_dialog`)填充完成时会回答调用该监听，用于初始化自定布局的元素。
+
+#### 相对高亮位置的引导布局（v2.3.0新增）
+
+鉴于好多人提出上面的方法对于箭头指向的引导控制起来比较麻烦，在不用的手机屏幕尺寸上会有位置差异。
+因此v2.3版本新增在高亮相对位置添加引导布局的方法。扩展addHighLight方法的重载，新增参数RelativeGuide：
+```
+.addGuidePage(
+        GuidePage.newInstance()
+                .addHighLight(btnRelative, new RelativeGuide(R.layout.view_relative_guide,
+                        Gravity.RIGHT, 100))
+)
+```
+
+RelativeGuide构造需要2个必传参数：
++ 布局layout的res id；
++ gravity 目前仅支持 Gravity.LEFT Gravity.TOP Gravity.RIGHT Gravity.BOTTOM
+
+还有一个可选参数padding，表示与高亮view的padding
+
+引导层本质是一个FrameLayout，RelativeGuide与setLayoutRes都会成为FrameLayout的子view，两者可以共存，
+setLayoutRes在下层，多个RelativeGuide按照添加顺序依次添加。
+
+各个方向的对齐方式如下图所示：
+
+![sample](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/relative_default_gravity.png)
+
+如Gravity.LEFT 的top与高亮view的top对齐，如果想改变，可以通过在传入布局的根布局添加marginTop。
+或者还可以继承RelativeGuide并复写offsetMargin方法修改位置，具体细节可查看RelativeGuide类。
 
 
 ### 引导页控制（v2.2.1版本新增）
@@ -328,7 +394,7 @@ GuidePage.setExitAnimation(exitAnimation)//退出动画
 | addGuidePage    |  添加一页引导页 |
 | build    |  生成Controller对象，控制引导层的显示，隐藏等操作 |
 | show    |  直接显示引导层，内部是调用Controller的show方法 |
-| anchor | 引导层显示的锚点，即根布局，不设置的话默认是decorView（v2.1.0版本添加） |
+| anchor | 引导层显示的锚点，即根布局，不设置的话默认是decorView（v2.1.0版本添加） v2.3.0默认修改为android.R.id.content |
 | setShowCounts | 引导层的显示次数，默认是1次。（v2.1.0版本添加）|
 
 ### GuidePage (v1.2.0版本新增)
