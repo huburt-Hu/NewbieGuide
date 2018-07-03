@@ -65,7 +65,7 @@ public class HighlightView implements HighLight {
     @Override
     public float getRadius() {
         if (mHole == null) {
-            throw new IllegalArgumentException("the hight light view is null!");
+            throw new IllegalArgumentException("the highlight view is null!");
         }
         return Math.max(mHole.getWidth() / 2, mHole.getHeight() / 2) + padding;
     }
@@ -73,7 +73,7 @@ public class HighlightView implements HighLight {
     @Override
     public RectF getRectF(View target) {
         if (mHole == null) {
-            throw new IllegalArgumentException("the hight light view is null!");
+            throw new IllegalArgumentException("the highlight view is null!");
         }
         RectF rectF = new RectF();
         Rect locationInView = ViewUtils.getLocationInView(target, mHole);

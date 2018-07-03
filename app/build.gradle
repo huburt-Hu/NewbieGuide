@@ -27,7 +27,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation project(':guide')
-//    implementation ('com.github.huburt-Hu:NewbieGuide:v2.2.2')
+//    implementation ('com.github.huburt-Hu:NewbieGuide:v2.3.0')
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"

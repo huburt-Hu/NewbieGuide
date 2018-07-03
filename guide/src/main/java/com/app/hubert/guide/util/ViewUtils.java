@@ -39,9 +39,12 @@ public class ViewUtils {
                 result.top += tmpRect.top;
             }
             tmp = (View) tmp.getParent();
+            if (tmp == null) {
+                throw new IllegalArgumentException("the view is not showing in the window!");
+            }
 
             //added by isanwenyu@163.com fix bug #21 the wrong rect user will received in ViewPager
-            if (tmp != null && tmp.getParent() != null && (tmp.getParent() instanceof ViewPager)) {
+            if (tmp.getParent() != null && (tmp.getParent() instanceof ViewPager)) {
                 tmp = (View) tmp.getParent();
             }
         }

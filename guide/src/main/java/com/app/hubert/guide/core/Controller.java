@@ -94,8 +94,6 @@ public class Controller {
 
     /**
      * 显示指引layout
-     *
-     * @return {@link NewbieGuide#SUCCESS} 表示成功显示，{@link NewbieGuide#FAILED} 表示已经显示过，不再显示
      */
     public void show() {
         final int showed = sp.getInt(label, 0);

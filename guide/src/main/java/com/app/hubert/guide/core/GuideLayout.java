@@ -126,8 +126,6 @@ public class GuideLayout extends FrameLayout {
 
     /**
      * 将自定义布局填充到guideLayout中
-     *
-     * @param guideLayout
      */
     private void addCustomToLayout(GuidePage guidePage) {
         removeAllViews();
