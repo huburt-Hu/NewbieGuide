@@ -57,8 +57,7 @@ public class RelativeGuide {
     }
 
     /**
-     *
-     * @param layout 相对位置引导布局
+     * @param layout  相对位置引导布局
      * @param gravity 仅限left top right bottom
      * @param padding 与高亮view的padding，单位px
      */
@@ -68,8 +67,9 @@ public class RelativeGuide {
         this.padding = padding;
     }
 
-    public View getGuideLayout(ViewGroup viewGroup) {
+    public final View getGuideLayout(ViewGroup viewGroup) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
+        onLayoutInflated(view);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
         MarginInfo marginInfo = getMarginInfo(gravity, viewGroup, view);
         LogUtil.e(marginInfo.toString());
@@ -110,6 +110,15 @@ public class RelativeGuide {
     }
 
     protected void offsetMargin(MarginInfo marginInfo, ViewGroup viewGroup, View view) {
+        //do nothing
+    }
+
+    /**
+     * 复写初始化布局
+     *
+     * @param view inflated from layout
+     */
+    protected void onLayoutInflated(View view) {
         //do nothing
     }
 }

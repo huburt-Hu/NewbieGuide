@@ -124,14 +124,25 @@ public class FirstActivity extends AppCompatActivity {
         btnRelative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GuidePage page = GuidePage.newInstance()
+                        .addHighLight(btnRelative,
+                                new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100) {
+                                    @Override
+                                    protected void onLayoutInflated(View view) {
+                                        TextView textView = view.findViewById(R.id.tv);
+                                        textView.setText("inflated");
+                                    }
+                                },
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Toast.makeText(FirstActivity.this, "highlight click", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                 NewbieGuide.with(FirstActivity.this)
                         .setLabel("relative")
                         .alwaysShow(true)//总是显示，调试时可以打开
-                        .addGuidePage(
-                                GuidePage.newInstance()
-                                        .addHighLight(btnRelative,
-                                                new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100))
-                        )
+                        .addGuidePage(page)
                         .show();
             }
         });

@@ -1,6 +1,7 @@
 package com.app.hubert.guide.model;
 
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 /**
@@ -11,11 +12,13 @@ public class HighlightRectF implements HighLight {
     private RectF rectF;
     private Shape shape;
     private int round;
+    private View.OnClickListener onClickListener;
 
-    public HighlightRectF(RectF rectF, Shape shape, int round) {
+    public HighlightRectF(RectF rectF, Shape shape, int round,@Nullable View.OnClickListener onClickListener) {
         this.rectF = rectF;
         this.shape = shape;
         this.round = round;
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -36,5 +39,10 @@ public class HighlightRectF implements HighLight {
     @Override
     public int getRound() {
         return round;
+    }
+
+    @Override
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
     }
 }

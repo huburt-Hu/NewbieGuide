@@ -25,6 +25,8 @@ public class HighlightView implements HighLight {
      */
     private int padding;
 
+    private View.OnClickListener onClickListener;
+
     public static HighlightView newInstance(View view) {
         return new HighlightView(view);
     }
@@ -48,6 +50,11 @@ public class HighlightView implements HighLight {
         return this;
     }
 
+    public HighlightView setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+        return this;
+    }
+
     public int getPadding() {
         return padding;
     }
@@ -60,6 +67,11 @@ public class HighlightView implements HighLight {
     @Override
     public int getRound() {
         return round;
+    }
+
+    @Override
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
     }
 
     @Override

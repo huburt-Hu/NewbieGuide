@@ -16,6 +16,8 @@ public interface HighLight {
 
     int getRound();
 
+    View.OnClickListener getOnClickListener();
+
     public enum Shape {
         CIRCLE,//圆形
         RECTANGLE, //矩形

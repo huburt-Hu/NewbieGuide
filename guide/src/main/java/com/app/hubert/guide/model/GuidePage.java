@@ -35,43 +35,59 @@ public class GuidePage {
     }
 
     public GuidePage addHighLight(View view) {
-        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, null);
+        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, null, null);
+    }
+
+    public GuidePage addHighLight(View view, View.OnClickListener onClickListener) {
+        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, null, onClickListener);
     }
 
     public GuidePage addHighLight(View view, RelativeGuide relativeGuide) {
-        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, relativeGuide);
+        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, relativeGuide, null);
+    }
+
+    public GuidePage addHighLight(View view, RelativeGuide relativeGuide, View.OnClickListener onClickListener) {
+        return addHighLight(view, HighLight.Shape.RECTANGLE, 0, 0, relativeGuide, onClickListener);
     }
 
     public GuidePage addHighLight(View view, HighLight.Shape shape) {
-        return addHighLight(view, shape, 0, 0, null);
+        return addHighLight(view, shape, 0, 0, null, null);
+    }
+
+    public GuidePage addHighLight(View view, HighLight.Shape shape, View.OnClickListener onClickListener) {
+        return addHighLight(view, shape, 0, 0, null, onClickListener);
     }
 
     public GuidePage addHighLight(View view, HighLight.Shape shape, RelativeGuide relativeGuide) {
-        return addHighLight(view, shape, 0, 0, relativeGuide);
+        return addHighLight(view, shape, 0, 0, relativeGuide, null);
     }
 
     public GuidePage addHighLight(View view, HighLight.Shape shape, int padding) {
-        return addHighLight(view, shape, 0, padding, null);
+        return addHighLight(view, shape, 0, padding, null, null);
     }
 
     public GuidePage addHighLight(View view, HighLight.Shape shape, int padding, RelativeGuide relativeGuide) {
-        return addHighLight(view, shape, 0, padding, relativeGuide);
+        return addHighLight(view, shape, 0, padding, relativeGuide, null);
     }
 
     /**
      * 添加需要高亮的view
      *
-     * @param view          需要高亮的view
-     * @param shape         高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
-     * @param round         圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
-     * @param padding       高亮相对view的padding,单位px
-     * @param relativeGuide 相对于高亮的引导布局
+     * @param view            需要高亮的view
+     * @param shape           高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round           圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param padding         高亮相对view的padding,单位px
+     * @param relativeGuide   相对于高亮的引导布局
+     * @param onClickListener 高亮区域点击事件
      */
-    public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding, @Nullable RelativeGuide relativeGuide) {
+    public GuidePage addHighLight(View view, HighLight.Shape shape, int round, int padding,
+                                  @Nullable RelativeGuide relativeGuide,
+                                  @Nullable View.OnClickListener onClickListener) {
         HighLight highlight = HighlightView.newInstance(view)
                 .setShape(shape)
                 .setRound(round)
-                .setPadding(padding);
+                .setPadding(padding)
+                .setOnClickListener(onClickListener);
         highLights.add(highlight);
         if (relativeGuide != null) {
             relativeGuide.highLight = highlight;
@@ -81,35 +97,50 @@ public class GuidePage {
     }
 
     public GuidePage addHighLight(RectF rectF) {
-        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, null);
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, null, null);
+    }
+
+    public GuidePage addHighLight(RectF rectF, View.OnClickListener onClickListener) {
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, null, onClickListener);
     }
 
     public GuidePage addHighLight(RectF rectF, RelativeGuide relativeGuide) {
-        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, relativeGuide);
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, relativeGuide, null);
+    }
+
+    public GuidePage addHighLight(RectF rectF, RelativeGuide relativeGuide, View.OnClickListener onClickListener) {
+        return addHighLight(rectF, HighLight.Shape.RECTANGLE, 0, relativeGuide, onClickListener);
     }
 
     public GuidePage addHighLight(RectF rectF, HighLight.Shape shape) {
-        return addHighLight(rectF, shape, 0, null);
+        return addHighLight(rectF, shape, 0, null, null);
+    }
+
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, View.OnClickListener onClickListener) {
+        return addHighLight(rectF, shape, 0, null, onClickListener);
     }
 
     public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, RelativeGuide relativeGuide) {
-        return addHighLight(rectF, shape, 0, relativeGuide);
+        return addHighLight(rectF, shape, 0, relativeGuide, null);
     }
 
     public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round) {
-        return addHighLight(rectF, shape, round, null);
+        return addHighLight(rectF, shape, round, null, null);
     }
 
     /**
      * 添加高亮区域
      *
-     * @param rectF         高亮区域，相对与anchor view（默认是decorView）
-     * @param shape         高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
-     * @param round         圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
-     * @param relativeGuide 相对于高亮的引导布局
+     * @param rectF           高亮区域，相对与anchor view（默认是decorView）
+     * @param shape           高亮形状{@link com.app.hubert.guide.model.HighLight.Shape}
+     * @param round           圆角尺寸，单位dp，仅{@link com.app.hubert.guide.model.HighLight.Shape#ROUND_RECTANGLE}有效
+     * @param relativeGuide   相对于高亮的引导布局
+     * @param onClickListener 高亮区域点击事件
      */
-    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round, @Nullable RelativeGuide relativeGuide) {
-        HighlightRectF highlight = new HighlightRectF(rectF, shape, round);
+    public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round,
+                                  @Nullable RelativeGuide relativeGuide,
+                                  @Nullable View.OnClickListener onClickListener) {
+        HighlightRectF highlight = new HighlightRectF(rectF, shape, round, onClickListener);
         highLights.add(highlight);
         if (relativeGuide != null) {
             relativeGuide.highLight = highlight;

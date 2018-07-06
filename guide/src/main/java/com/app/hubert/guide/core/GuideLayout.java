@@ -10,7 +10,9 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
@@ -38,6 +40,9 @@ public class GuideLayout extends FrameLayout {
     private Paint mPaint;
     public GuidePage guidePage;
     private OnGuideLayoutDismissListener listener;
+    private float downX;
+    private float downY;
+    private int touchSlop;
 
     public GuideLayout(Context context, GuidePage page, Controller controller) {
         super(context);
@@ -68,6 +73,59 @@ public class GuideLayout extends FrameLayout {
 
         //ViewGroup默认设定为true，会使onDraw方法不执行，如果复写了onDraw(Canvas)方法，需要清除此标记
         setWillNotDraw(false);
+
+        touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    private void setGuidePage(GuidePage page) {
+        this.guidePage = page;
+        setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (guidePage.isEverywhereCancelable()) {
+                    remove();
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                downX = event.getX();
+                downY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                float upX = event.getX();
+                float upY = event.getY();
+                if (Math.abs(upX - downX) < touchSlop && Math.abs(upY - downY) < touchSlop) {
+                    List<HighLight> highLights = guidePage.getHighLights();
+                    for (HighLight highLight : highLights) {
+                        RectF rectF = highLight.getRectF((ViewGroup) getParent());
+                        if (rectF.contains(upX, upY)) {
+                            OnClickListener onClickListener = highLight.getOnClickListener();
+                            if (onClickListener != null) {
+                                onClickListener.onClick(this);
+                            }
+                            return true;
+                        }
+                    }
+                    performClick();
+                }
+                break;
+
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -75,10 +133,10 @@ public class GuideLayout extends FrameLayout {
         super.onDraw(canvas);
         int backgroundColor = guidePage.getBackgroundColor();
         canvas.drawColor(backgroundColor == 0 ? DEFAULT_BACKGROUND_COLOR : backgroundColor);
-        drawHightLights(canvas);
+        drawHighlights(canvas);
     }
 
-    private void drawHightLights(Canvas canvas) {
+    private void drawHighlights(Canvas canvas) {
         List<HighLight> highLights = guidePage.getHighLights();
         if (highLights != null) {
             for (HighLight highLight : highLights) {
@@ -110,18 +168,6 @@ public class GuideLayout extends FrameLayout {
         if (enterAnimation != null) {
             startAnimation(enterAnimation);
         }
-    }
-
-    private void setGuidePage(GuidePage page) {
-        this.guidePage = page;
-        setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (guidePage.isEverywhereCancelable()) {
-                    remove();
-                }
-            }
-        });
     }
 
     /**
