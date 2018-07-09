@@ -28,7 +28,7 @@ Android 快速实现新手引导层的库
 
 
 `
-compile 'com.android.support:appcompat-v7:25.3.1'
+compileOnly 'com.android.support:appcompat-v7:25.3.1'
 `
 
 ## 导入
@@ -48,79 +48,14 @@ module的build.gradle添加
 
 ```
  dependencies {
-	  compile 'com.github.huburt-Hu:NewbieGuide:v2.1.0'
+	  compile 'com.github.huburt-Hu:NewbieGuide:v2.4.0'
 	}
 ```
 
-如果你的项目中使用了appcompat-v7，可以排除此库对v7的引用，避免版本混淆
+**确保你的项目中已经依赖了appcompat-v7**
 
-```
- dependencies {
-	  compile ('com.github.huburt-Hu:NewbieGuide:v2.1.0') {
-            exclude group: 'com.android.support'
-      }
- }
-```
 
 ## 使用
-
-* [v1.x.x版本使用](https://github.com/huburt-Hu/NewbieGuide/wiki)
-
-* v2.x版本使用
-
-改动看似很大，实际上只是把Page单独抽离出来，通过addGuidePage方法添加一页代替之前的asPage，使其符合面对对象。
-
-```
-NewbieGuide.with(this)
-                .setLabel("page")//设置引导层标示区分不同引导层，必传！否则报错
-                .setOnGuideChangedListener(new OnGuideChangedListener() {
-                    @Override
-                    public void onShowed(Controller controller) {
-                        Log.e(TAG, "NewbieGuide onShowed: ");
-                        //引导层显示
-                    }
-
-                    @Override
-                    public void onRemoved(Controller controller) {
-                        Log.e(TAG, "NewbieGuide  onRemoved: ");
-                        //引导层消失（多页切换不会触发）
-                    }
-                })
-                .setOnPageChangedListener(new OnPageChangedListener() {
-                    @Override
-                    public void onPageChanged(int page) {
-                        Log.e(TAG, "NewbieGuide  onPageChanged: " + page);
-                        //引导页切换，page为当前页位置，从0开始
-                    }
-                })
-                .alwaysShow(true)//是否每次都显示引导层，默认false，只显示一次
-                .addGuidePage(//添加一页引导页
-                        GuidePage.newInstance()//创建一个实例
-                                .addHighLight(button)//添加高亮的view
-                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE)
-                                .setLayoutRes(R.layout.view_guide)//设置引导页布局
-                                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
-                                    @Override
-                                    public void onLayoutInflated(View view, Controller controller) {
-                                        //引导页布局填充后回调，用于初始化
-                                        TextView tv = view.findViewById(R.id.textView2);
-                                        tv.setText("我是动态设置的文本");
-                                    }
-                                })
-                                .setEnterAnimation(enterAnimation)//进入动画
-                                .setExitAnimation(exitAnimation)//退出动画
-                )
-                .addGuidePage(
-                        GuidePage.newInstance()
-                                .addHighLight(tvBottom, HighLight.Shape.RECTANGLE,20)
-                                .setLayoutRes(R.layout.view_guide_custom, R.id.iv)//引导页布局，点击跳转下一页或者消失引导层的控件id
-                                .setEverywhereCancelable(false)//是否点击任意地方跳转下一页或者消失引导层，默认true
-                                .setBackgroundColor(getResources().getColor(R.color.testColor))//设置背景色，建议使用有透明度的颜色
-                                .setEnterAnimation(enterAnimation)//进入动画
-                                .setExitAnimation(exitAnimation)//退出动画
-                )
-                .show();//显示引导层(至少需要一页引导页才能显示)
-```
 
 ### 简单使用
 
@@ -181,7 +116,57 @@ addHighLight方法有多个重写，完整参数如下：
     public GuidePage addHighLight(RectF rectF, HighLight.Shape shape, int round, @Nullable RelativeGuide relativeGuide)
 ```
 
+### 高亮区域点击事件（v2.4.0新增）
 
+之前也是issues中提到需要这个功能，希望能够开放此api，因此在2.4版本中增加了。
+由于目前高亮view的相关参数过多，因此将一些新增的配置都放入了HighlightOptions中，HighlightOptions可以通过内部Builder对象构建：
+
+```
+HighlightOptions options = new HighlightOptions.Builder()
+         .setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                       Toast.makeText(FirstActivity.this, "highlight click", Toast.LENGTH_SHORT).show();
+                }
+         })
+         .build();
+GuidePage page = GuidePage.newInstance().addHighLightWithOptions(btnRelative, options);
+NewbieGuide.with(FirstActivity.this)
+         .setLabel("relative")
+         .alwaysShow(true)//总是显示，调试时可以打开
+         .addGuidePage(page)
+         .show();
+```
+
+### 自定义高亮区域绘制内容（v2.4.0新增）
+
+该功能主要是为了满足[issue51](https://github.com/huburt-Hu/NewbieGuide/issues/51)提出的需求。
+
+首先构建一个HighlightOptions，并设置OnHighlightDrewListener：
+
+```
+HighlightOptions options = new HighlightOptions.Builder()
+        .setOnHighlightDrewListener(new OnHighlightDrewListener() {
+            @Override
+            public void onHighlightDrew(Canvas canvas, RectF rectF) {
+                Paint paint = new Paint();
+                paint.setColor(Color.WHITE);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(10);
+                paint.setPathEffect(new DashPathEffect(new float[]{20, 20}, 0));
+                canvas.drawCircle(rectF.centerX(), rectF.centerY(), rectF.width() / 2 + 10, paint);
+            }
+        })
+        .build();
+```
+
+onHighlightDrew方法会在引导层绘制高亮之后马上回调，可通过canvas，以及给定的高亮区域rectF，绘制想要任何视图，例如上述示例中完成的issue提出的虚线。
+
+然后与高亮区域点击事件类似，传入highlight以及option到addHighLightWithOptions方法中：
+
+```
+GuidePage page = GuidePage.newInstance().addHighLightWithOptions(btnRelative, options);
+```
 
 
 ### 显示次数控制
@@ -254,7 +239,6 @@ setLayoutRes在下层，多个RelativeGuide按照添加顺序依次添加。
 如Gravity.LEFT 的top与高亮view的top对齐，如果想改变，可以通过在传入布局的根布局添加marginTop。
 或者还可以继承RelativeGuide并复写offsetMargin方法修改位置，具体细节可查看RelativeGuide类。
 
-
 ### 引导页控制（v2.2.1版本新增）
 
 v2.2.1版本Controller新增两个方法用于控制引导页的回退，可以在OnLayoutInflatedListener接口的回调方法中获取到controller对象，执行相应的操作。
@@ -294,7 +278,7 @@ NewbieGuide.with(FirstActivity.this)
 
 ![anchor](https://github.com/huburt-Hu/NewbieGuide/raw/master/screenshoot/anchor.png)
 
-引导层其实是一个FrameLayout，设置anchor之后，引导层的大小就与anchor所占的位置相同。默认是DecorView，即全屏。setLayoutRes方法设置的说明布局则会添加到引导层的FrameLayout中。
+引导层其实是一个FrameLayout，设置anchor之后，引导层的大小就与anchor所占的位置相同。默认是android.R.id.content。setLayoutRes方法设置的说明布局则会添加到引导层的FrameLayout中。
 
 ### 引导层显示隐藏监听
 
@@ -375,59 +359,11 @@ GuidePage.setExitAnimation(exitAnimation)//退出动画
 
 
 
-## 流程控制
-
-### NewbieGuide
-
-`NewbieGuide.with()` 为入口方法，返回Builder对象，用于构建引导层
-
-### Builder
-
-引导层的建造者对象，一个引导层可以包含多个引导页。
-
-| 方法    |  含义    |
-| ------- | :--------:|
-| setLabel    |  设置引导层标示区分不同引导层，必传！否则报错 |
-| setOnGuideChangedListener    |  设置引导层的显示与消失监听 |
-| setOnPageChangedListener    |  设置引导页切换监听 |
-| alwaysShow    |  是否每次都显示引导层，默认false，只显示一次 |
-| addGuidePage    |  添加一页引导页 |
-| build    |  生成Controller对象，控制引导层的显示，隐藏等操作 |
-| show    |  直接显示引导层，内部是调用Controller的show方法 |
-| anchor | 引导层显示的锚点，即根布局，不设置的话默认是decorView（v2.1.0版本添加） v2.3.0默认修改为android.R.id.content |
-| setShowCounts | 引导层的显示次数，默认是1次。（v2.1.0版本添加）|
-
-### GuidePage (v1.2.0版本新增)
-
-引导页对象，包含一张引导页的信息，如高亮的view，布局，跳转控件id，背景色等。
-
-| 方法    |  含义    |
-| ------- | :--------:|
-| addHighLight    |  添加引导页高亮的view |
-| setLayoutRes    |  引导页布局，第二个可变参数为点击跳转下一页或者消失引导层的控件id |
-| setEverywhereCancelable    |  是否点击任意地方跳转下一页或者消失引导层，默认true |
-| setBackgroundColor    |  设置引导页背景色，建议使用有透明度的颜色，默认背景色为：0xb2000000 |
-| setOnLayoutInflatedListener    |  设置自定义layout填充监听，用于自定义layout初始化 |
-| setEnterAnimation    |  设置进入动画 |
-| setExitAnimation    |  设置退出动画 |
-
-
-### Controller
-
-通过Builder.build()方法返回，用于控制引导层的显示，隐藏等操作
-
-| 方法    |  含义    |
-| ------- | :--------:|
-| show    |  显示引导层的第一页 |
-| resetLabel    |  设置此引导层从没有显示过 |
-| remove    |  移除引导层 |
-| showPreviewPage | 显示前一页page(v2.2.1新增）|
-| showPage(int position) | 显示position位置引导页 (v2.2.1新增) |
 
 
 ## [Q&A](https://github.com/huburt-Hu/NewbieGuide/wiki/Q&A)
 
-
+遇到问题可以看查看Q&A
 
 ## 关于我
 
