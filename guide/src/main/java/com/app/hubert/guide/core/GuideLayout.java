@@ -20,11 +20,14 @@ import android.widget.RelativeLayout;
 
 import com.app.hubert.guide.NewbieGuide;
 import com.app.hubert.guide.listener.AnimationListenerAdapter;
+import com.app.hubert.guide.listener.OnHighlightDrewListener;
 import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.model.HighlightOptions;
 import com.app.hubert.guide.model.RelativeGuide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -113,10 +116,7 @@ public class GuideLayout extends FrameLayout {
                     for (HighLight highLight : highLights) {
                         RectF rectF = highLight.getRectF((ViewGroup) getParent());
                         if (rectF.contains(upX, upY)) {
-                            OnClickListener onClickListener = highLight.getOnClickListener();
-                            if (onClickListener != null) {
-                                onClickListener.onClick(this);
-                            }
+                            notifyClickListener(highLight);
                             return true;
                         }
                     }
@@ -126,6 +126,15 @@ public class GuideLayout extends FrameLayout {
 
         }
         return super.onTouchEvent(event);
+    }
+
+    private void notifyClickListener(HighLight highLight) {
+        HighlightOptions options = highLight.getOptions();
+        if (options != null) {
+            if (options.onClickListener!=null) {
+                options.onClickListener.onClick(this);
+            }
+        }
     }
 
     @Override
@@ -156,6 +165,16 @@ public class GuideLayout extends FrameLayout {
                         canvas.drawRect(rectF, mPaint);
                         break;
                 }
+                notifyDrewListener(canvas, highLight, rectF);
+            }
+        }
+    }
+
+    private void notifyDrewListener(Canvas canvas, HighLight highLight, RectF rectF) {
+        HighlightOptions options = highLight.getOptions();
+        if (options != null) {
+            if (options.onHighlightDrewListener != null) {
+                options.onHighlightDrewListener.onHighlightDrew(canvas, rectF);
             }
         }
     }

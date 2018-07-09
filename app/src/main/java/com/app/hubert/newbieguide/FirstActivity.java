@@ -1,5 +1,9 @@
 package com.app.hubert.newbieguide;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +17,11 @@ import android.widget.Toast;
 import com.app.hubert.guide.NewbieGuide;
 import com.app.hubert.guide.core.Controller;
 import com.app.hubert.guide.listener.OnGuideChangedListener;
+import com.app.hubert.guide.listener.OnHighlightDrewListener;
 import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
+import com.app.hubert.guide.model.HighlightOptions;
 import com.app.hubert.guide.model.RelativeGuide;
 import com.app.hubert.guide.util.ViewUtils;
 
@@ -71,12 +77,25 @@ public class FirstActivity extends AppCompatActivity {
         btnAnchor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HighlightOptions options = new HighlightOptions.Builder()
+                        .setOnHighlightDrewListener(new OnHighlightDrewListener() {
+                            @Override
+                            public void onHighlightDrew(Canvas canvas, RectF rectF) {
+                                Paint paint = new Paint();
+                                paint.setColor(Color.WHITE);
+                                paint.setStyle(Paint.Style.STROKE);
+                                paint.setStrokeWidth(10);
+                                paint.setPathEffect(new DashPathEffect(new float[]{20, 20}, 0));
+                                canvas.drawCircle(rectF.centerX(), rectF.centerY(), rectF.width() / 2 + 10, paint);
+                            }
+                        })
+                        .build();
                 NewbieGuide.with(FirstActivity.this)
                         .setLabel("anchor")
                         .anchor(anchorView)
                         .alwaysShow(true)//总是显示，调试时可以打开
                         .addGuidePage(GuidePage.newInstance()
-                                .addHighLight(btnAnchor, HighLight.Shape.CIRCLE, 25)
+                                .addHighLightWithOptions(btnAnchor, HighLight.Shape.CIRCLE, options)
                                 .setLayoutRes(R.layout.view_guide_anchor))
                         .show();
             }
@@ -124,21 +143,23 @@ public class FirstActivity extends AppCompatActivity {
         btnRelative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HighlightOptions options = new HighlightOptions.Builder()
+                        .setRelativeGuide(new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100) {
+                            @Override
+                            protected void onLayoutInflated(View view) {
+                                TextView textView = view.findViewById(R.id.tv);
+                                textView.setText("inflated");
+                            }
+                        })
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(FirstActivity.this, "highlight click", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .build();
                 GuidePage page = GuidePage.newInstance()
-                        .addHighLight(btnRelative,
-                                new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100) {
-                                    @Override
-                                    protected void onLayoutInflated(View view) {
-                                        TextView textView = view.findViewById(R.id.tv);
-                                        textView.setText("inflated");
-                                    }
-                                },
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Toast.makeText(FirstActivity.this, "highlight click", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        .addHighLightWithOptions(btnRelative, options);
                 NewbieGuide.with(FirstActivity.this)
                         .setLabel("relative")
                         .alwaysShow(true)//总是显示，调试时可以打开

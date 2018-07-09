@@ -15,48 +15,24 @@ import com.app.hubert.guide.util.ViewUtils;
 public class HighlightView implements HighLight {
 
     private View mHole;
-    private Shape shape = Shape.RECTANGLE;
-    /**
-     * 圆角，仅当shape = Shape.ROUND_RECTANGLE才生效
-     */
+    private Shape shape;
     private int round;
     /**
      * 高亮相对view的padding
      */
     private int padding;
+    private HighlightOptions options;
+    private RectF rectF;
 
-    private View.OnClickListener onClickListener;
-
-    public static HighlightView newInstance(View view) {
-        return new HighlightView(view);
-    }
-
-    private HighlightView(View hole) {
-        this.mHole = hole;
-    }
-
-    public HighlightView setShape(Shape shape) {
+    public HighlightView(View mHole, Shape shape, int round, int padding) {
+        this.mHole = mHole;
         this.shape = shape;
-        return this;
-    }
-
-    public HighlightView setRound(int round) {
         this.round = round;
-        return this;
-    }
-
-    public HighlightView setPadding(int padding) {
         this.padding = padding;
-        return this;
     }
 
-    public HighlightView setOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-        return this;
-    }
-
-    public int getPadding() {
-        return padding;
+    public void setOptions(HighlightOptions options) {
+        this.options = options;
     }
 
     @Override
@@ -70,8 +46,8 @@ public class HighlightView implements HighLight {
     }
 
     @Override
-    public View.OnClickListener getOnClickListener() {
-        return onClickListener;
+    public HighlightOptions getOptions() {
+        return options;
     }
 
     @Override
@@ -87,13 +63,15 @@ public class HighlightView implements HighLight {
         if (mHole == null) {
             throw new IllegalArgumentException("the highlight view is null!");
         }
-        RectF rectF = new RectF();
-        Rect locationInView = ViewUtils.getLocationInView(target, mHole);
-        rectF.left = locationInView.left - padding;
-        rectF.top = locationInView.top - padding;
-        rectF.right = locationInView.right + padding;
-        rectF.bottom = locationInView.bottom + padding;
-        LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
+        if (rectF == null) {
+            rectF = new RectF();
+            Rect locationInView = ViewUtils.getLocationInView(target, mHole);
+            rectF.left = locationInView.left - padding;
+            rectF.top = locationInView.top - padding;
+            rectF.right = locationInView.right + padding;
+            rectF.bottom = locationInView.bottom + padding;
+            LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
+        }
         return rectF;
     }
 
