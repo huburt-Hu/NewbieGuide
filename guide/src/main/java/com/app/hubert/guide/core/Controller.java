@@ -219,9 +219,9 @@ public class Controller {
                     }
                 }
             }
-        }
-        if (onGuideChangedListener != null) {
-            onGuideChangedListener.onRemoved(this);
+            if (onGuideChangedListener != null) {
+                onGuideChangedListener.onRemoved(this);
+            }
         }
     }
 

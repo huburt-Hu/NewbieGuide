@@ -3,11 +3,14 @@ package com.app.hubert.newbieguide;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.app.hubert.guide.core.Controller;
+import com.app.hubert.guide.listener.OnGuideChangedListener;
 import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
 import com.app.hubert.guide.NewbieGuide;
@@ -53,6 +56,17 @@ public class AbcFragment extends Fragment {
             NewbieGuide.with(this)//传入fragment
                     .setLabel("guide2")//设置引导层标示，必传！否则报错
                     .alwaysShow(true)
+                    .setOnGuideChangedListener(new OnGuideChangedListener() {
+                        @Override
+                        public void onShowed(Controller controller) {
+
+                        }
+
+                        @Override
+                        public void onRemoved(Controller controller) {
+                            Log.e("tag", "onRemoved");
+                        }
+                    })
                     .addGuidePage(GuidePage.newInstance()
                             .addHighLight(textView, HighLight.Shape.CIRCLE)//添加需要高亮的view
                             .setLayoutRes(R.layout.view_guide)//自定义的提示layout，不要添加背景色，引导层背景色通过setBackgroundColor()设置
