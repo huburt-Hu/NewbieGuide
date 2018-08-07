@@ -134,14 +134,18 @@ public class Controller {
             return;
         }
         current = position;
-        currentLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
-            @Override
-            public void onGuideLayoutDismiss(GuideLayout guideLayout) {
-                showGuidePage();
-            }
-        });
-        currentLayout.remove();
-
+        //fix #59 GuideLayout.setOnGuideLayoutDismissListener() on a null object reference
+        if (currentLayout != null) {
+            currentLayout.setOnGuideLayoutDismissListener(new GuideLayout.OnGuideLayoutDismissListener() {
+                @Override
+                public void onGuideLayoutDismiss(GuideLayout guideLayout) {
+                    showGuidePage();
+                }
+            });
+            currentLayout.remove();
+        } else {
+            showGuidePage();
+        }
     }
 
     /**
@@ -222,6 +226,7 @@ public class Controller {
             if (onGuideChangedListener != null) {
                 onGuideChangedListener.onRemoved(this);
             }
+            currentLayout = null;
         }
     }
 
