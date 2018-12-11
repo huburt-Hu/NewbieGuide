@@ -131,7 +131,7 @@ public class GuideLayout extends FrameLayout {
     private void notifyClickListener(HighLight highLight) {
         HighlightOptions options = highLight.getOptions();
         if (options != null) {
-            if (options.onClickListener!=null) {
+            if (options.onClickListener != null) {
                 options.onClickListener.onClick(this);
             }
         }
@@ -224,7 +224,7 @@ public class GuideLayout extends FrameLayout {
         List<RelativeGuide> relativeGuides = guidePage.getRelativeGuides();
         if (relativeGuides.size() > 0) {
             for (RelativeGuide relativeGuide : relativeGuides) {
-                addView(relativeGuide.getGuideLayout((ViewGroup) getParent()));
+                addView(relativeGuide.getGuideLayout((ViewGroup) getParent(), controller));
             }
         }
     }

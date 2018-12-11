@@ -34,6 +34,7 @@ public class FirstActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        //简单使用
         final Button btnSimple = (Button) findViewById(R.id.btn_simple);
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +50,7 @@ public class FirstActivity extends AppCompatActivity {
                         .show();
             }
         });
+        //对话框形式
         final Button btnDialog = (Button) findViewById(R.id.btn_dialog);
         btnDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +73,7 @@ public class FirstActivity extends AppCompatActivity {
                         .show();
             }
         });
-
+        //设置anchor 及 自定义绘制图形
         final View anchorView = findViewById(R.id.ll_anchor);
         final Button btnAnchor = (Button) findViewById(R.id.btn_anchor);
         btnAnchor.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +102,7 @@ public class FirstActivity extends AppCompatActivity {
                         .show();
             }
         });
-
+        //监听
         final Button btnListener = findViewById(R.id.btn_listener);
         btnListener.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +148,7 @@ public class FirstActivity extends AppCompatActivity {
                 HighlightOptions options = new HighlightOptions.Builder()
                         .setRelativeGuide(new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100) {
                             @Override
-                            protected void onLayoutInflated(View view) {
+                            protected void onLayoutInflated(View view, Controller controller) {
                                 TextView textView = view.findViewById(R.id.tv);
                                 textView.setText("inflated");
                             }
