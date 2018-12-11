@@ -140,6 +140,12 @@ public class FirstActivity extends AppCompatActivity {
                 RecyclerViewActivity.start(FirstActivity.this);
             }
         });
+        findViewById(R.id.btn_scroll).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ScrollViewActivity.start(FirstActivity.this);
+            }
+        });
 
         final View btnRelative = findViewById(R.id.btn_relative);
         btnRelative.setOnClickListener(new View.OnClickListener() {
