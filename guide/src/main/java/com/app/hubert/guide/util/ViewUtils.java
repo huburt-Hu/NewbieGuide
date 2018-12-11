@@ -33,6 +33,9 @@ public class ViewUtils {
             return result;
         }
         while (tmp != decorView && tmp != parent) {
+            if（tmp == null）{
+                throw new IllegalArgumentException("child can not be null .");
+            }
             tmp.getHitRect(tmpRect);
             if (!tmp.getClass().equals(FRAGMENT_CON)) {
                 result.left += tmpRect.left;
