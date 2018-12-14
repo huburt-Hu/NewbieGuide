@@ -11,6 +11,7 @@ public class HighlightOptions {
     public View.OnClickListener onClickListener;
     public RelativeGuide relativeGuide;
     public OnHighlightDrewListener onHighlightDrewListener;
+    public boolean fetchLocationEveryTime;
 
     public static class Builder {
 
@@ -41,6 +42,14 @@ public class HighlightOptions {
          */
         public Builder setOnHighlightDrewListener(OnHighlightDrewListener listener) {
             options.onHighlightDrewListener = listener;
+            return this;
+        }
+
+        /**
+         * 是否每次显示引导层都重新获取高亮位置
+         */
+        public Builder isFetchLocationEveryTime(boolean b) {
+            options.fetchLocationEveryTime = b;
             return this;
         }
 

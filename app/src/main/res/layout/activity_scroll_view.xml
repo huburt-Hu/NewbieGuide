@@ -78,6 +78,7 @@
             android:layout_height="100dp" />
 
         <View
+            android:id="@+id/v_light_next"
             android:layout_width="match_parent"
             android:background="@android:color/black"
             android:layout_height="100dp" />
