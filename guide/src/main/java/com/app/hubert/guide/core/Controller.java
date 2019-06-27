@@ -261,7 +261,7 @@ public class Controller {
             });
         }
 
-        if (v4Fragment != null) {
+        if (v4Fragment != null && v4Fragment.isAdded()) {
             android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
             V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment == null) {
