@@ -57,6 +57,12 @@
         android:text="列表" />
 
     <Button
+        android:id="@+id/btn_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ScrollView" />
+
+    <Button
         android:id="@+id/btn_relative"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

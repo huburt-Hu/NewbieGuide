@@ -1,7 +1,7 @@
 package com.app.hubert.guide.model;
 
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 /**

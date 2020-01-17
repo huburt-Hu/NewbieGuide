@@ -1,14 +1,15 @@
 package com.app.hubert.guide.model;
 
 import android.graphics.RectF;
-import android.support.annotation.IntDef;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.LayoutRes;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.app.hubert.guide.core.Controller;
 import com.app.hubert.guide.util.LogUtil;
 
 import java.lang.annotation.Retention;
@@ -67,9 +68,10 @@ public class RelativeGuide {
         this.padding = padding;
     }
 
-    public final View getGuideLayout(ViewGroup viewGroup) {
+    public final View getGuideLayout(ViewGroup viewGroup, Controller controller) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
         onLayoutInflated(view);
+        onLayoutInflated(view, controller);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
         MarginInfo marginInfo = getMarginInfo(gravity, viewGroup, view);
         LogUtil.e(marginInfo.toString());
@@ -117,8 +119,20 @@ public class RelativeGuide {
      * 复写初始化布局
      *
      * @param view inflated from layout
+     * @see RelativeGuide#onLayoutInflated(View view, Controller controller)
      */
+    @Deprecated
     protected void onLayoutInflated(View view) {
+        //do nothing
+    }
+
+    /**
+     * 复写初始化布局
+     *
+     * @param view       inflated from layout
+     * @param controller controller
+     */
+    protected void onLayoutInflated(View view, Controller controller) {
         //do nothing
     }
 }

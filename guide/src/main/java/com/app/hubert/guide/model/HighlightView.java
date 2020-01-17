@@ -64,16 +64,22 @@ public class HighlightView implements HighLight {
             throw new IllegalArgumentException("the highlight view is null!");
         }
         if (rectF == null) {
-            rectF = new RectF();
-            Rect locationInView = ViewUtils.getLocationInView(target, mHole);
-            rectF.left = locationInView.left - padding;
-            rectF.top = locationInView.top - padding;
-            rectF.right = locationInView.right + padding;
-            rectF.bottom = locationInView.bottom + padding;
-            LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
+            rectF = fetchLocation(target);
+        } else if (options != null && options.fetchLocationEveryTime) {
+            rectF = fetchLocation(target);
         }
+        LogUtil.i(mHole.getClass().getSimpleName() + "'s location:" + rectF);
         return rectF;
     }
 
+    private RectF fetchLocation(View target) {
+        RectF location = new RectF();
+        Rect locationInView = ViewUtils.getLocationInView(target, mHole);
+        location.left = locationInView.left - padding;
+        location.top = locationInView.top - padding;
+        location.right = locationInView.right + padding;
+        location.bottom = locationInView.bottom + padding;
+        return location;
+    }
 
 }

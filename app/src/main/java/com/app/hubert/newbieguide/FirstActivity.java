@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.annotation.IntDef;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -23,10 +23,6 @@ import com.app.hubert.guide.model.GuidePage;
 import com.app.hubert.guide.model.HighLight;
 import com.app.hubert.guide.model.HighlightOptions;
 import com.app.hubert.guide.model.RelativeGuide;
-import com.app.hubert.guide.util.ViewUtils;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 public class FirstActivity extends AppCompatActivity {
 
@@ -34,6 +30,7 @@ public class FirstActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        //简单使用
         final Button btnSimple = (Button) findViewById(R.id.btn_simple);
         btnSimple.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +46,7 @@ public class FirstActivity extends AppCompatActivity {
                         .show();
             }
         });
+        //对话框形式
         final Button btnDialog = (Button) findViewById(R.id.btn_dialog);
         btnDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +69,7 @@ public class FirstActivity extends AppCompatActivity {
                         .show();
             }
         });
-
+        //设置anchor 及 自定义绘制图形
         final View anchorView = findViewById(R.id.ll_anchor);
         final Button btnAnchor = (Button) findViewById(R.id.btn_anchor);
         btnAnchor.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +98,7 @@ public class FirstActivity extends AppCompatActivity {
                         .show();
             }
         });
-
+        //监听
         final Button btnListener = findViewById(R.id.btn_listener);
         btnListener.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +136,12 @@ public class FirstActivity extends AppCompatActivity {
                 RecyclerViewActivity.start(FirstActivity.this);
             }
         });
+        findViewById(R.id.btn_scroll).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ScrollViewActivity.start(FirstActivity.this);
+            }
+        });
 
         final View btnRelative = findViewById(R.id.btn_relative);
         btnRelative.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +150,7 @@ public class FirstActivity extends AppCompatActivity {
                 HighlightOptions options = new HighlightOptions.Builder()
                         .setRelativeGuide(new RelativeGuide(R.layout.view_relative_guide, Gravity.LEFT, 100) {
                             @Override
-                            protected void onLayoutInflated(View view) {
+                            protected void onLayoutInflated(View view, Controller controller) {
                                 TextView textView = view.findViewById(R.id.tv);
                                 textView.setText("inflated");
                             }

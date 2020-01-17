@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.app.hubert.newbieguide.ObservableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimaryDark"
+            android:layout_height="100dp" />
+
+        <TextView
+            android:id="@+id/v_light"
+            android:layout_width="match_parent"
+            android:text="Highlight View"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:background="@color/testColor"
+            android:layout_height="100dp" />
+
+        <View
+            android:id="@+id/v_light_next"
+            android:layout_width="match_parent"
+            android:background="@android:color/black"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_height="100dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@android:color/holo_purple"
+            android:layout_height="100dp" />
+    </LinearLayout>
+</com.app.hubert.newbieguide.ObservableScrollView>
