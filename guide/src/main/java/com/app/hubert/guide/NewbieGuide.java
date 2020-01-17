@@ -40,7 +40,7 @@ public class NewbieGuide {
         return new Builder(fragment);
     }
 
-    public static Builder with(android.support.v4.app.Fragment v4Fragment) {
+    public static Builder with(androidx.fragment.app.Fragment v4Fragment) {
         return new Builder(v4Fragment);
     }
 

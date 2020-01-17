@@ -15,7 +15,7 @@ import java.util.List;
 public class Builder {
     Activity activity;
     Fragment fragment;
-    android.support.v4.app.Fragment v4Fragment;
+    androidx.fragment.app.Fragment v4Fragment;
     String label;
     boolean alwaysShow;//总是显示 default false
     View anchor;//锚点view
@@ -33,7 +33,7 @@ public class Builder {
         this.activity = fragment.getActivity();
     }
 
-    public Builder(android.support.v4.app.Fragment v4Fragment) {
+    public Builder(androidx.fragment.app.Fragment v4Fragment) {
         this.v4Fragment = v4Fragment;
         this.activity = v4Fragment.getActivity();
     }

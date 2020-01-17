@@ -1,8 +1,8 @@
 package com.app.hubert.guide.model;
 
 import android.graphics.RectF;
-import android.support.annotation.IntDef;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.LayoutRes;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;

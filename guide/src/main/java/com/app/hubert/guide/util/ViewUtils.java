@@ -3,7 +3,7 @@ package com.app.hubert.guide.util;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;

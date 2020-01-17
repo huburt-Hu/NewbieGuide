@@ -5,25 +5,18 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.app.hubert.guide.NewbieGuide;
 import com.app.hubert.guide.lifecycle.FragmentLifecycleAdapter;
 import com.app.hubert.guide.lifecycle.ListenerFragment;
 import com.app.hubert.guide.lifecycle.V4ListenerFragment;
 import com.app.hubert.guide.listener.OnGuideChangedListener;
-import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 import com.app.hubert.guide.listener.OnPageChangedListener;
 import com.app.hubert.guide.model.GuidePage;
-import com.app.hubert.guide.model.RelativeGuide;
 import com.app.hubert.guide.util.LogUtil;
-import com.app.hubert.guide.util.ScreenUtils;
 
 import java.lang.reflect.Field;
 import java.security.InvalidParameterException;
@@ -42,7 +35,7 @@ public class Controller {
 
     private Activity activity;
     private Fragment fragment;
-    private android.support.v4.app.Fragment v4Fragment;
+    private androidx.fragment.app.Fragment v4Fragment;
     private OnGuideChangedListener onGuideChangedListener;
     private OnPageChangedListener onPageChangedListener;
     private String label;
@@ -262,7 +255,7 @@ public class Controller {
         }
 
         if (v4Fragment != null && v4Fragment.isAdded()) {
-            android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
+            androidx.fragment.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
             V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment == null) {
                 v4ListenerFragment = new V4ListenerFragment();
@@ -288,7 +281,7 @@ public class Controller {
             }
         }
         if (v4Fragment != null) {
-            android.support.v4.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
+            androidx.fragment.app.FragmentManager v4Fm = v4Fragment.getChildFragmentManager();
             V4ListenerFragment v4ListenerFragment = (V4ListenerFragment) v4Fm.findFragmentByTag(LISTENER_FRAGMENT);
             if (v4ListenerFragment != null) {
                 v4Fm.beginTransaction().remove(v4ListenerFragment).commitAllowingStateLoss();

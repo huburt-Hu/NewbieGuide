@@ -1,9 +1,9 @@
 package com.app.hubert.guide.model;
 
 import android.graphics.RectF;
-import android.support.annotation.ColorInt;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.ColorInt;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.animation.Animation;
 
@@ -11,7 +11,6 @@ import com.app.hubert.guide.listener.OnHighlightDrewListener;
 import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
