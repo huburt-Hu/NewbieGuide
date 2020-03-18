@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -172,14 +173,37 @@ public class Controller {
                 showNextOrRemove();
             }
         });
-        mParentView.addView(guideLayout, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        FrameLayout.LayoutParams params = createLayoutParams(guideLayout);
+
+        mParentView.addView(guideLayout, params);
         currentLayout = guideLayout;
         if (onPageChangedListener != null) {
             onPageChangedListener.onPageChanged(current);
         }
         isShowing = true;
     }
+
+    private FrameLayout.LayoutParams createLayoutParams(GuideLayout guideLayout) {
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels){
+
+            layoutParams.topMargin = getStatusBarHeight();
+
+        }
+
+        return layoutParams;
+
+    }
+
+    private int getStatusBarHeight() {
+        Resources resources = activity.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        return resources.getDimensionPixelSize(resourceId);
+    }
+
 
     private void showNextOrRemove() {
         if (current < guidePages.size() - 1) {
