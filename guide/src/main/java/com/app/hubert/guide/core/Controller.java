@@ -187,11 +187,15 @@ public class Controller {
     private FrameLayout.LayoutParams createLayoutParams(GuideLayout guideLayout) {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
+        // vivo
         if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels){
 
             layoutParams.topMargin = getStatusBarHeight();
 
+        }
+        //  华为
+        if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels+getStatusBarHeight()){
+            layoutParams.topMargin = getStatusBarHeight();
         }
 
         return layoutParams;
