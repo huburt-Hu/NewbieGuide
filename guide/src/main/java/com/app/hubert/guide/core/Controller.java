@@ -56,6 +56,7 @@ public class Controller {
     private SharedPreferences sp;
     private int indexOfChild = -1;//使用anchor时记录的在父布局的位置
     private boolean isShowing;
+    private boolean specialForStatusBar;
 
     public Controller(Builder builder) {
         this.activity = builder.activity;
@@ -66,6 +67,7 @@ public class Controller {
         this.label = builder.label;
         this.alwaysShow = builder.alwaysShow;
         this.guidePages = builder.guidePages;
+        this.specialForStatusBar = builder.specialForStatusBar;
         showCounts = builder.showCounts;
 
         View anchor = builder.anchor;
@@ -174,7 +176,7 @@ public class Controller {
             }
         });
 
-        FrameLayout.LayoutParams params = createLayoutParams(guideLayout);
+        FrameLayout.LayoutParams params = createLayoutParams(specialForStatusBar);
 
         mParentView.addView(guideLayout, params);
         currentLayout = guideLayout;
@@ -184,20 +186,20 @@ public class Controller {
         isShowing = true;
     }
 
-    private FrameLayout.LayoutParams createLayoutParams(GuideLayout guideLayout) {
+    private FrameLayout.LayoutParams createLayoutParams(boolean isSpecial) {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        // vivo
-        if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels){
 
-            layoutParams.topMargin = getStatusBarHeight();
-
+        if(isSpecial){
+            // vivo
+            if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels){
+                layoutParams.topMargin = getStatusBarHeight();
+            }
+            //  华为
+            if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels+getStatusBarHeight()){
+                layoutParams.topMargin = getStatusBarHeight();
+            }
         }
-        //  华为
-        if(mParentView.getMeasuredHeight() == activity.getResources().getDisplayMetrics().heightPixels+getStatusBarHeight()){
-            layoutParams.topMargin = getStatusBarHeight();
-        }
-
         return layoutParams;
 
     }

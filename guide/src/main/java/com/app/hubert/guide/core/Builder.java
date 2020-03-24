@@ -24,6 +24,14 @@ public class Builder {
     OnPageChangedListener onPageChangedListener;
     List<GuidePage> guidePages = new ArrayList<>();
 
+    /**
+     * 如果你是 windowTranslucentStatus 为 true
+     * 如果使用全屏引导，即你的 layout 占满整个引导以实现引导功能
+     * 目前发现在 vivo 华为设备上会出现问题
+     * 需要手动设置 specialForStatusBar 为 true 防止引导页出现下移问题
+     */
+    boolean specialForStatusBar;
+
     public Builder(Activity activity) {
         this.activity = activity;
     }
@@ -131,5 +139,10 @@ public class Builder {
         if (activity == null && (fragment != null || v4Fragment != null)) {
             throw new IllegalStateException("activity is null, please make sure that fragment is showing when call NewbieGuide");
         }
+    }
+
+    public Builder setSpecialForStatusBar(boolean specialForStatusBar){
+        this.specialForStatusBar = specialForStatusBar;
+        return this;
     }
 }
