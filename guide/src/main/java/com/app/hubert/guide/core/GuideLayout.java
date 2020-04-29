@@ -120,7 +120,7 @@ public class GuideLayout extends FrameLayout {
                             return true;
                         }
                     }
-                    performClick();
+                    //performClick();
                 }
                 break;
 
