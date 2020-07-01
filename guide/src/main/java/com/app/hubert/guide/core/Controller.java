@@ -157,7 +157,7 @@ public class Controller {
      * 显示当前引导页的前一页
      */
     public void showPreviewPage() {
-        showPage(--current);
+        showPage(current - 1);
     }
 
     /**
