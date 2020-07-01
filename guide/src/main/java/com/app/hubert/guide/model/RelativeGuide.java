@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.app.hubert.guide.core.Controller;
 import com.app.hubert.guide.util.LogUtil;
+import com.app.hubert.guide.listener.OnLayoutInflatedListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -52,9 +53,17 @@ public class RelativeGuide {
     public int padding;
     public int gravity;
 
+    private OnLayoutInflatedListener mListener;
+
     public RelativeGuide(@LayoutRes int layout, @LimitGravity int gravity) {
         this.layout = layout;
         this.gravity = gravity;
+    }
+
+    public RelativeGuide(@LayoutRes int layout, @LimitGravity int gravity , OnLayoutInflatedListener listener) {
+        this.layout = layout;
+        this.gravity = gravity;
+        this.mListener = listener;
     }
 
     /**
@@ -133,6 +142,9 @@ public class RelativeGuide {
      * @param controller controller
      */
     protected void onLayoutInflated(View view, Controller controller) {
-        //do nothing
+        // 调用自身onLayoutInflated listener
+        if (mListener != null){
+            mListener.onLayoutInflated(view,controller);
+        }
     }
 }
