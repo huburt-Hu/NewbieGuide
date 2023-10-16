@@ -74,7 +74,14 @@ public class HighlightView implements HighLight {
 
     private RectF fetchLocation(View target) {
         RectF location = new RectF();
-        Rect locationInView = ViewUtils.getLocationInView(target, mHole);
+        Rect locationInView = new Rect();
+        try{
+            locationInView = ViewUtils.getLocationInView(target, mHole);
+        }catch(IllegalArgumentException exception){
+            // ViewUtils.getLocationInView(target, mHole); 中包含了一些参数异常的抛出,
+            // 假设出现异常,则改为使用获取view可见部分相对于屏幕的坐标
+            target.getGlobalVisibleRect(locationInView);
+        }
         location.left = locationInView.left - padding;
         location.top = locationInView.top - padding;
         location.right = locationInView.right + padding;
