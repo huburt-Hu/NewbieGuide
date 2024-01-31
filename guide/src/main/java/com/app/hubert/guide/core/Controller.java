@@ -56,6 +56,8 @@ public class Controller {
     private int indexOfChild = -1;//使用anchor时记录的在父布局的位置
     private boolean isShowing;
 
+    private View anchorView;
+
     public Controller(Builder builder) {
         this.activity = builder.activity;
         this.fragment = builder.fragment;
@@ -71,6 +73,7 @@ public class Controller {
         if (anchor == null) {
             anchor = activity.findViewById(android.R.id.content);
         }
+        anchorView = anchor;
         if (anchor instanceof FrameLayout) {
             mParentView = (FrameLayout) anchor;
         } else {
@@ -218,11 +221,11 @@ public class Controller {
             ViewGroup parent = (ViewGroup) currentLayout.getParent();
             parent.removeView(currentLayout);
             //移除anchor添加的frameLayout
-            if (!(parent instanceof FrameLayout)) {
+            if (!(anchorView instanceof FrameLayout)) {
                 ViewGroup original = (ViewGroup) parent.getParent();
                 View anchor = parent.getChildAt(0);
-                parent.removeAllViews();
-                if (anchor != null) {
+                if (original != null && anchor != null && anchor == anchorView) {
+                    parent.removeAllViews();
                     if (indexOfChild > 0) {
                         original.addView(anchor, indexOfChild, parent.getLayoutParams());
                     } else {
