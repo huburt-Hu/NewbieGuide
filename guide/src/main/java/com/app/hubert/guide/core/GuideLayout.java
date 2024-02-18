@@ -140,9 +140,11 @@ public class GuideLayout extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        int saved = canvas.saveLayer(null,null,Canvas.ALL_SAVE_FLAG);
         int backgroundColor = guidePage.getBackgroundColor();
         canvas.drawColor(backgroundColor == 0 ? DEFAULT_BACKGROUND_COLOR : backgroundColor);
         drawHighlights(canvas);
+        canvas.restoreToCount(saved);
     }
 
     private void drawHighlights(Canvas canvas) {
